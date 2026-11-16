@@ -13,7 +13,7 @@ const destinos = [
 
 const selectDestino = document.getElementById("destino");
 
-destinos.forEach(function(destino) {
+destinos.forEach(function (destino) {
     const option = document.createElement("option");
     option.value = destino;
     option.textContent = destino;
@@ -25,7 +25,7 @@ destinos.forEach(function(destino) {
 // =================================
 const formulario = document.querySelector(".buscador");
 
-formulario.addEventListener("submit", function(e) {
+formulario.addEventListener("submit", function (e) {
     // 1. Captura de valores
     const destino = document.getElementById("destino").value;
     const pasajerosInput = document.getElementById("pasajeros").value;
@@ -36,7 +36,8 @@ formulario.addEventListener("submit", function(e) {
 
     // 2. Validación de Destino
     if (destino === "") {
-        alert("Por favor, seleccione un destino válido para su vuelo.");
+        notificar("Por favor, seleccione un destino válido para su vuelo.");
+        selectDestino.focus();
         e.preventDefault();
         return;
     }
@@ -44,14 +45,16 @@ formulario.addEventListener("submit", function(e) {
     // 3. Validación de Pasajeros
     // Verifica si está vacío (isNaN), si es menor a 1, o si pusieron decimales
     if (isNaN(cantidadPasajeros) || cantidadPasajeros < 1 || pasajerosInput.includes('.')) {
-        alert("Por favor, ingrese un número válido de pasajeros (mínimo 1).");
+        notificar("Por favor, ingrese un número válido de pasajeros (mínimo 1).");
+        document.getElementById("pasajeros").focus();
         e.preventDefault();
         return;
     }
 
     // 4. Validación de Clase
     if (clase === "") {
-        alert("Por favor, seleccione la clase en la que desea viajar.");
+        notificar("Por favor, seleccione la clase en la que desea viajar.");
+        document.getElementById("clase").focus();
         e.preventDefault();
         return;
     }
@@ -67,5 +70,63 @@ formulario.addEventListener("submit", function(e) {
     // 6. Almacenamiento
     localStorage.setItem("busqueda", JSON.stringify(busqueda));
     localStorage.removeItem("asientosSeleccionados");
-    console.log("Búsqueda guardada con éxito:", busqueda);
 });
+
+// =================================
+// DESTINOS POPULARES
+// Tarjetas con foto y precio mínimo: al tocarlas se completa el buscador.
+// =================================
+const imagenesDestinos = {
+    "Madrid": "./images/madrid.jpg",
+    "Lima": "./images/lima.jpg",
+    "Miami": "./images/miami.jpg",
+    "Río de Janeiro": "./images/rio-de-janeiro.jpg",
+    "Bariloche": "./images/bariloche.png",
+    "Mendoza": "./images/mendoza.jpg",
+    "Puerto Iguazú": "./images/puerto-iguazu.jpg"
+};
+
+const contenedorDestinos = document.getElementById("destinos-populares");
+
+if (contenedorDestinos && typeof vuelos !== "undefined") {
+    destinos.forEach(function (destino) {
+        const preciosDelDestino = vuelos
+            .filter(function (vuelo) {
+                return vuelo.destino === destino;
+            })
+            .map(function (vuelo) {
+                return vuelo.precio;
+            });
+
+        if (preciosDelDestino.length === 0) return;
+
+        const precioMinimo = Math.min.apply(null, preciosDelDestino);
+
+        const card = document.createElement("button");
+        card.type = "button";
+        card.className = "destino-card";
+        card.setAttribute("aria-label", "Buscar vuelos a " + destino + ", desde U$D " + precioMinimo);
+        card.innerHTML = `
+            <img src="${imagenesDestinos[destino]}" alt="" loading="lazy">
+            <span class="destino-info">
+                <span class="destino-nombre">${destino}</span>
+                <span class="destino-precio">desde <strong class="mono">U$D ${precioMinimo}</strong></span>
+            </span>
+            <span class="destino-flecha">${ATERRIZARG.icono("arrow-right")}</span>
+        `;
+
+        card.addEventListener("click", function () {
+            selectDestino.value = destino;
+            formulario.scrollIntoView({ behavior: "smooth", block: "center" });
+            formulario.classList.remove("resaltado");
+            // Fuerza el reinicio de la animación si se elige otro destino
+            void formulario.offsetWidth;
+            formulario.classList.add("resaltado");
+
+            const clase = document.getElementById("clase");
+            (clase.value === "" ? clase : formulario.querySelector("button[type='submit']")).focus({ preventScroll: true });
+        });
+
+        contenedorDestinos.appendChild(card);
+    });
+}

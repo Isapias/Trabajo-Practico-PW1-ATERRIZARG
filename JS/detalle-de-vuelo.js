@@ -8,47 +8,29 @@ const avionData = [
     { fila: 7, izq: ["7A", "7B", "7C", "7D"], pasillo: "O", der: ["7E", "7F", "7G", "7H"] }
 ];
 
-const container =
-    document.querySelector(
-        ".asiento-container"
-    );
+const container = document.querySelector(".asiento-container");
 
-const vuelo =
-    JSON.parse(
-        localStorage.getItem(
-            "vueloSeleccionado"
-        )
-    );
+const vuelo = JSON.parse(localStorage.getItem("vueloSeleccionado"));
 
 if (!vuelo) {
-    alert("Debe seleccionar un vuelo primero.");
+    notificar("Debe seleccionar un vuelo primero.");
     window.location.href = "./busqueda.html";
 } else {
-    const claveAsientos =
-        "asientos_" +
-        vuelo.numeroVuelo;
+    const claveAsientos = "asientos_" + vuelo.numeroVuelo;
 
-    const asientosOcupados =
-        JSON.parse(
-            localStorage.getItem(
-                claveAsientos
-            )
-        ) || [];
+    const asientosOcupados = JSON.parse(localStorage.getItem(claveAsientos)) || [];
 
-    let asientosSeleccionados =
-        JSON.parse(
-            localStorage.getItem(
-                "asientosSeleccionados"
-            )
-        ) || [];
+    let asientosSeleccionados = JSON.parse(localStorage.getItem("asientosSeleccionados")) || [];
 
+    function obtenerCantidadPasajeros() {
+        const busqueda = JSON.parse(localStorage.getItem("busqueda"));
+
+        return busqueda?.pasajeros || 1;
+    }
 
     function renderAvion() {
-
         avionData.forEach(function (fila) {
-
-            const numero =
-                document.createElement("div");
+            const numero = document.createElement("div");
 
             numero.className = "numero";
             numero.textContent = fila.fila;
@@ -57,8 +39,7 @@ if (!vuelo) {
 
             fila.izq.forEach(crearAsiento);
 
-            const pasillo =
-                document.createElement("div");
+            const pasillo = document.createElement("div");
 
             pasillo.className = "pasillo";
             pasillo.textContent = fila.pasillo;
@@ -66,197 +47,159 @@ if (!vuelo) {
             container.appendChild(pasillo);
 
             fila.der.forEach(crearAsiento);
-
         });
-
     }
 
     function continuarCheckout() {
+        const asientos = JSON.parse(localStorage.getItem("asientosSeleccionados")) || [];
 
-        const asientos =
-            JSON.parse(
-                localStorage.getItem(
-                    "asientosSeleccionados"
-                )
-            ) || [];
+        const cantidadPasajeros = obtenerCantidadPasajeros();
 
-        const busqueda =
-            JSON.parse(
-                localStorage.getItem(
-                    "busqueda"
-                )
-            );
-
-        const cantidadPasajeros =
-            busqueda?.pasajeros || 1;
-
-        if (
-            asientos.length !==
-            cantidadPasajeros
-        ) {
-            alert(
-                "Debe seleccionar " +
-                cantidadPasajeros +
-                " asiento(s)"
-            );
+        if (asientos.length !== cantidadPasajeros) {
+            notificar("Debe seleccionar " + cantidadPasajeros + " asiento(s)");
             return;
         }
 
-        window.location.href =
-            "./checkout.html";
+        window.location.href = "./checkout.html";
+    }
 
+    // El botón "Continuar" llama a esta función desde el atributo onclick
+    window.continuarCheckout = continuarCheckout;
+
+    // =========================
+    // RESUMEN EN VIVO
+    // Muestra los asientos elegidos y cuántos faltan.
+    // =========================
+
+    function actualizarResumenAsientos() {
+        const cantidadPasajeros = obtenerCantidadPasajeros();
+        const elegidos = document.getElementById("asientos-elegidos");
+        const ayuda = document.getElementById("ayuda-asientos");
+
+        if (elegidos) {
+            elegidos.textContent =
+                asientosSeleccionados.length > 0
+                    ? asientosSeleccionados.join(", ")
+                    : "—";
+        }
+
+        if (ayuda) {
+            const faltan = cantidadPasajeros - asientosSeleccionados.length;
+
+            if (faltan > 0) {
+                ayuda.textContent =
+                    "Elegí " + faltan + (faltan === 1 ? " asiento" : " asientos") +
+                    (asientosSeleccionados.length > 0 ? " más." : ".") +
+                    " Tocá un asiento disponible para seleccionarlo.";
+                ayuda.classList.remove("completo");
+            } else {
+                ayuda.textContent = "¡Listo! Ya elegiste todos tus asientos.";
+                ayuda.classList.add("completo");
+            }
+        }
+    }
+
+    function marcarAsiento(svg, id, seleccionado) {
+        svg.classList.toggle("seleccionado", seleccionado);
+        svg.classList.toggle("disponible", !seleccionado);
+        svg.setAttribute("aria-pressed", String(seleccionado));
+        svg.setAttribute(
+            "aria-label",
+            "Asiento " + id + (seleccionado ? ", seleccionado" : ", disponible")
+        );
     }
 
     function crearAsiento(id) {
+        const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
 
-        const svg =
-            document.createElementNS(
-                "http://www.w3.org/2000/svg",
-                "svg"
-            );
-
-        svg.setAttribute(
-            "viewBox",
-            "0 0 24 24"
-        );
-
+        svg.setAttribute("viewBox", "0 0 24 24");
 
         svg.innerHTML =
-            `<path d="M4,18v3h3v-3h10v3h3v-6H4V18z M19,10h3v3h-3V10z M2,10h3v3H2V10z M17,13H7V5c0-1.1,0.9-2,2-2h6c1.1,0,2,0.9,2,2V13z"/>`;
+            `<title>Asiento ${id}</title><path d="M4,18v3h3v-3h10v3h3v-6H4V18z M19,10h3v3h-3V10z M2,10h3v3H2V10z M17,13H7V5c0-1.1,0.9-2,2-2h6c1.1,0,2,0.9,2,2V13z"/>`;
 
         svg.classList.add("svg");
 
         if (asientosOcupados.includes(id)) {
-
             svg.classList.add("ocupado");
-
+            svg.setAttribute("role", "img");
+            svg.setAttribute("aria-label", "Asiento " + id + ", ocupado");
         } else {
+            svg.setAttribute("role", "button");
+            svg.setAttribute("tabindex", "0");
 
-            svg.classList.add("disponible");
+            marcarAsiento(svg, id, asientosSeleccionados.includes(id));
 
-            if (
-                asientosSeleccionados.includes(id)
-            ) {
-                svg.classList.remove(
-                    "disponible"
-                );
+            function alternarAsiento() {
+                const cantidadPasajeros = obtenerCantidadPasajeros();
 
-                svg.classList.add(
-                    "seleccionado"
-                );
+                // Si ya estaba seleccionado
+                if (asientosSeleccionados.includes(id)) {
+                    asientosSeleccionados = asientosSeleccionados.filter(function (asiento) {
+                        return asiento !== id;
+                    });
+
+                    localStorage.setItem("asientosSeleccionados", JSON.stringify(asientosSeleccionados));
+
+                    marcarAsiento(svg, id, false);
+                    actualizarResumenAsientos();
+
+                    return;
+                }
+
+                // Control de cantidad máxima
+                if (asientosSeleccionados.length >= cantidadPasajeros) {
+                    notificar("Solo puede seleccionar " + cantidadPasajeros + " asiento(s)");
+
+                    return;
+                }
+
+                // Seleccionar asiento
+                asientosSeleccionados.push(id);
+
+                localStorage.setItem("asientosSeleccionados", JSON.stringify(asientosSeleccionados));
+
+                marcarAsiento(svg, id, true);
+                actualizarResumenAsientos();
             }
 
-            svg.addEventListener(
-                "click",
-                function () {
+            svg.addEventListener("click", alternarAsiento);
 
-                    const busqueda =
-                        JSON.parse(
-                            localStorage.getItem(
-                                "busqueda"
-                            )
-                        );
-
-                    const cantidadPasajeros =
-                        busqueda?.pasajeros || 1;
-
-                    // Si ya estaba seleccionado
-                    if (
-                        asientosSeleccionados.includes(id)
-                    ) {
-
-                        asientosSeleccionados =
-                            asientosSeleccionados.filter(
-                                function (asiento) {
-                                    return asiento !== id;
-                                }
-                            );
-
-                        localStorage.setItem(
-                            "asientosSeleccionados",
-                            JSON.stringify(
-                                asientosSeleccionados
-                            )
-                        );
-
-                        svg.classList.remove(
-                            "seleccionado"
-                        );
-
-                        svg.classList.add(
-                            "disponible"
-                        );
-
-                        return;
-                    }
-
-                    // Control de cantidad máxima
-                    if (
-                        asientosSeleccionados.length >=
-                        cantidadPasajeros
-                    ) {
-
-                        alert(
-                            "Solo puede seleccionar " +
-                            cantidadPasajeros +
-                            " asiento(s)"
-                        );
-
-                        return;
-                    }
-
-                    // Seleccionar asiento
-                    asientosSeleccionados.push(id);
-
-                    localStorage.setItem(
-                        "asientosSeleccionados",
-                        JSON.stringify(
-                            asientosSeleccionados
-                        )
-                    );
-
-                    svg.classList.remove(
-                        "disponible"
-                    );
-
-                    svg.classList.add(
-                        "seleccionado"
-                    );
-
+            // Permite elegir asientos con el teclado
+            svg.addEventListener("keydown", function (e) {
+                if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    alternarAsiento();
                 }
-            );
-
+            });
         }
 
         container.appendChild(svg);
-
     }
 
     renderAvion();
+    actualizarResumenAsientos();
 
-    console.log(vuelo);
+    // =========================
+    // DATOS DEL VUELO
+    // =========================
 
-    document.getElementById(
-        "ruta-vuelo"
-    ).textContent =
-        vuelo.origen +
-        " → " +
-        vuelo.destino;
+    const cantidadPasajeros = obtenerCantidadPasajeros();
 
-    document.getElementById(
-        "horario-vuelo"
-    ).textContent =
-        vuelo.horarioSalida + " - " + vuelo.horarioLlegada;
+    document.getElementById("ruta-vuelo").textContent = vuelo.origen + " → " + vuelo.destino;
 
-    document.getElementById(
-        "tipo-vuelo"
-    ).textContent =
-        vuelo.aerolinea;
+    document.getElementById("horario-vuelo").textContent = vuelo.horarioSalida + " - " + vuelo.horarioLlegada;
 
-    document.getElementById(
-        "precio-vuelo"
-    ).textContent =
-        "Total: $" +
-        vuelo.precio;
+    document.getElementById("tipo-vuelo").textContent = ATERRIZARG.nombreAerolinea(vuelo.aerolinea);
 
+    const fechaVuelo = document.getElementById("fecha-vuelo");
+    if (fechaVuelo) fechaVuelo.textContent = vuelo.fechaSalida;
+
+    const detallePrecio = document.getElementById("detalle-precio");
+    if (detallePrecio) {
+        detallePrecio.textContent =
+            "U$D " + vuelo.precio + " × " + cantidadPasajeros +
+            (cantidadPasajeros === 1 ? " pasajero" : " pasajeros");
+    }
+
+    document.getElementById("precio-vuelo").textContent = "Total: U$D " + vuelo.precio * cantidadPasajeros;
 }

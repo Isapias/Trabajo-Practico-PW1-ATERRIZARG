@@ -1,160 +1,215 @@
-.main-calendario {
-    background: rgba(255, 255, 255, 0.6);
-    border-radius: 1rem;
-    padding: 2vh;
-    display: flex;
-    flex-direction: column;
-    gap: 1vh;
-    grid-row: 2/3;
-    grid-column: 2/3;
-    justify-content: space-evenly;
+/* =========================================================
+   CALENDARIO · Resumen de la oferta y selección de fecha
+   ========================================================= */
+
+.volver {
+    display: inline-flex;
     align-items: center;
-    height: 90%;
-    align-self: center;
+    gap: 0.45rem;
+    margin-bottom: 1.25rem;
+    color: var(--texto-suave);
+    font-size: 0.92rem;
+    font-weight: 600;
+    text-decoration: none;
 }
 
-.main-calendario input {
-    padding: .5rem;
-    width: 100%;
-    margin-bottom: 1.7rem;
-    border-radius: 6px;
-    border: 1px solid gray;
-}
-
-.main-calendario button {
-    padding: 1rem;
-    width: 100%;
-    font-size: 1rem;
+.volver:hover {
+    color: var(--marca-700);
 }
 
 .grid-calendario {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: 12vh 1fr 12vh;
-    min-height: 100vh;
-    width: 100%;
-    padding: 2vh;
-    gap: 2vh;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    align-items: stretch;
+    gap: 1.5rem;
 }
 
-.calendario {
-    width: 350px;
-    max-width: 100%;
-    background: #fff;
-    border: 1px solid #ddd;
-    border-radius: 8px;
+/* ---------- Oferta elegida ---------- */
+.oferta-resumen {
+    position: relative;
+    min-height: 420px;
     overflow: hidden;
-    font-family: sans-serif;
+    border-radius: var(--radio-lg);
+    background: linear-gradient(150deg, #140e4a, #5a4cf0);
+    box-shadow: var(--sombra);
+    color: #fff;
 }
 
-.header-mes {
-    background-color: #6c63ff;
-    color: white;
-    text-align: center;
-    padding: 10px;
-    font-weight: bold;
+.oferta-resumen img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
-.dias-semana {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    background: #f8f9fa;
-    font-size: 0.8rem;
-    text-align: center;
-    padding: 5px 0;
-    border-bottom: 1px solid #ddd;
-}
-
-.grid-dias {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-}
-
-.dia {
-    height: 45px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-bottom: 1px solid #eee;
-    border-right: 1px solid #eee;
-    font-size: 0.9rem;
-}
-
-.bloqueado {
-    color: #ccc;
-    background-color: #fafafa;
-    pointer-events: none;
-}
-
-.disponible {
-    cursor: pointer;
-    transition: background 0.2s;
-}
-
-.disponible:hover {
-    background-color: #e8eaf6;
-}
-
-.disponible input {
+.oferta-resumen img[src=""] {
     display: none;
 }
 
-
-.disponible:has(input:checked) {
-    background-color: #9690f7;
-    color: #ffffff;
-    font-weight: bold;
+.oferta-resumen::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(20, 14, 74, 0.05) 30%, rgba(20, 14, 74, 0.9) 100%);
 }
 
-@media screen and (max-width: 700px) {
-    .grid-calendario {
-        display: grid;
-        grid-template-columns: 1fr;
-        grid-template-rows: auto;
-        gap: 1vh 0;
-    }
-
-    .main-calendario {
-        grid-column: 1/2;
-        grid-row: 2/3;
-        height: auto;
-    }
+.oferta-resumen-info {
+    position: absolute;
+    inset: auto 0 0 0;
+    z-index: 1;
+    padding: clamp(1.25rem, 3vw, 2rem);
 }
 
-@media screen and (max-width: 480px) {
-    .calendario {
-        width: 100%;
-    }
-    
-    .dia {
-        height: 35px;
-        font-size: 0.8rem;
-    }
+.oferta-resumen h1 {
+    margin-top: 0.75rem;
+    color: #fff;
+    font-size: clamp(2rem, 4.5vw, 3rem);
+}
+
+.oferta-resumen-info > p {
+    margin-top: 0.4rem;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.oferta-precio strong {
+    color: #ffc9a8;
+    font-size: 1.5rem;
+    font-weight: 500;
+}
+
+/* ---------- Calendario ---------- */
+.calendario {
+    margin-top: 1.25rem;
+    padding: 1rem;
+    border: 1px solid var(--linea);
+    border-radius: var(--radio);
+    background: var(--fondo);
+}
+
+.header-mes {
+    padding: 0.25rem 0 0.9rem;
+    color: var(--tinta);
+    font-size: 1.1rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    text-align: center;
+}
+
+.dias-semana,
+.grid-dias {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: clamp(3px, 1vw, 6px);
+}
+
+.dias-semana {
+    margin-bottom: 0.4rem;
+    color: var(--texto-suave);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.dia {
+    position: relative;
+    display: grid;
+    place-items: center;
+    aspect-ratio: 1;
+    border-radius: 12px;
+    font-family: var(--fuente-mono);
+    font-size: 0.95rem;
+}
+
+.dia.bloqueado {
+    color: #b3b1c6;
+}
+
+.dia.disponible {
+    cursor: pointer;
+}
+
+.dia.disponible input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.dia.disponible span {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 100%;
+    border: 2px solid var(--marca);
+    border-radius: 12px;
+    background: var(--superficie);
+    color: var(--marca-700);
+    font-weight: 500;
+    animation: latido 2s ease-out infinite;
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease,
+        transform 0.3s var(--suave);
+}
+
+.dia.disponible:hover span {
+    transform: scale(1.06);
+}
+
+.dia.disponible input:checked + span {
+    background: var(--marca);
+    color: #fff;
+    animation: none;
+    box-shadow: 0 8px 18px -8px rgba(107, 95, 255, 0.95);
+}
+
+.dia.disponible input:focus-visible + span {
+    outline: 3px solid rgba(107, 95, 255, 0.45);
+    outline-offset: 2px;
+}
+
+@keyframes latido {
+    0% { box-shadow: 0 0 0 0 rgba(107, 95, 255, 0.45); }
+    70%, 100% { box-shadow: 0 0 0 9px rgba(107, 95, 255, 0); }
+}
+
+.calendario-leyenda {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    color: var(--texto-suave);
+    font-size: 0.86rem;
+}
+
+.calendario-leyenda i {
+    width: 14px;
+    height: 14px;
+    border: 2px solid var(--marca);
+    border-radius: 5px;
 }
 
 .pasajeros-container {
-    width: 100%;
-    margin: 1.5rem 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+    margin-top: 1.25rem;
 }
 
-.pasajeros-container label {
-    font-size: 1rem;
-    font-weight: bold;
-    color: #6c63ff;
+#buscar-oferta {
+    margin-top: 1.25rem;
 }
 
-.pasajeros-container select {
-    padding: 0.7rem;
-    width: 100%;
-    border-radius: 6px;
-    border: 1px solid #ddd;
-    font-size: 1rem;
-    outline: none;
-    cursor: pointer;
-    background-color: white;
-    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
-    color: #333;
-}
+/* ---------- Responsive ---------- */
+@media (max-width: 860px) {
+    .grid-calendario {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .oferta-resumen {
+        min-height: 260px;
+    }
+}

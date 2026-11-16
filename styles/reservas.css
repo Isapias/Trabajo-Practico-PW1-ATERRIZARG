@@ -1,349 +1,342 @@
+/* =========================================================
+   MIS RESERVAS · Listado, pase de abordar y acordeones
+   ========================================================= */
+
 .grid-reservas {
     display: grid;
-    grid-template-columns: 1fr 3fr;
-    grid-template-rows: auto 1fr auto;
-    min-height: 100vh;
-    width: 100%;
-    padding: 2vh;
-    gap: 2vh;
+    grid-template-columns: 360px minmax(0, 1fr);
+    align-items: start;
+    gap: 1.5rem;
 }
 
-main.b {
-    grid-column: 1 / 2;
-    grid-row: 2 / 3;
+/* Sin reservas: el estado vacío ocupa todo el ancho */
+.grid-reservas:has(.sin-reservas) {
+    grid-template-columns: minmax(0, 1fr);
 }
 
-.confirmacion-container {
-    background: transparent;
-    border-radius: 1rem;
-    padding: 0;
-    overflow-y: auto;
+/* ---------- Listado ---------- */
+#lista-reservas {
+    display: grid;
+    gap: 0.75rem;
 }
 
-.a {
-    grid-column: 1 / 3;
+#lista-reservas .card {
+    position: relative;
+    padding: 1rem 1.1rem 1rem 1.35rem;
+    overflow: hidden;
+    border: 1.5px solid var(--linea);
+    border-radius: var(--radio);
+    background: var(--superficie);
+    cursor: pointer;
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.25s ease,
+        transform 0.3s var(--suave);
 }
 
+#lista-reservas .card::before {
+    content: '';
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 5px;
+    background: var(--linea-fuerte);
+    transition: background-color 0.2s ease;
+}
+
+#lista-reservas .card:hover {
+    border-color: var(--marca-borde);
+    transform: translateX(3px);
+}
+
+#lista-reservas .card.selected {
+    border-color: var(--marca);
+    box-shadow: var(--sombra);
+}
+
+#lista-reservas .card.selected::before {
+    background: var(--marca);
+}
+
+.card-ruta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+
+.card-ruta p {
+    color: var(--tinta);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+}
+
+.card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem 1rem;
+    margin-top: 0.45rem;
+    color: var(--texto-suave);
+    font-size: 0.86rem;
+}
+
+.card-meta li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+/* ---------- Pase de abordar ---------- */
 .accordion-container {
-    grid-column: 2 / 3;
-    grid-row: 2 / 3;
+    display: grid;
+    gap: 1rem;
+    min-width: 0;
+}
+
+.pase {
+    overflow: hidden;
+    border-radius: var(--radio-lg);
+    background: var(--superficie);
+    box-shadow: var(--sombra);
+}
+
+.pase-principal {
+    padding: clamp(1.25rem, 3vw, 1.75rem);
+    background:
+        radial-gradient(70% 120% at 100% 0%, rgba(255, 138, 76, 0.5), transparent 60%),
+        linear-gradient(135deg, #1a1259 0%, #5a4cf0 100%);
+    color: #fff;
+}
+
+.pase-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.pase-marca {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.82rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+}
+
+.pase-ruta {
+    display: grid;
+    grid-template-columns: auto minmax(60px, 1fr) auto;
+    align-items: center;
+    gap: clamp(0.75rem, 3vw, 1.75rem);
+    margin-top: 1.5rem;
+}
+
+.pase-ruta > div:not(.pase-linea) {
     display: flex;
     flex-direction: column;
-    gap: 0;
-    overflow-y: auto;
+    min-width: 0;
 }
 
-.confirmacion-container.flight-details {
-    border-radius: 1rem 1rem 0 0;
+.pase-ruta > div:last-child {
+    text-align: right;
 }
 
-.confirmacion-container.payment-summary {
-    border-radius: 0 0 1rem 1rem;
+.pase-codigo {
+    font-size: clamp(2rem, 6vw, 3.25rem);
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: -0.02em;
 }
 
-.flight-details {
-    margin-bottom: 0;
+.pase-ruta span:not(.pase-hora) {
+    margin-top: 0.3rem;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.8);
 }
 
-footer {
-    grid-column: 1 / 3;
-    grid-row: 4 / 5;
+.pase-hora {
+    color: #ffc9a8;
+    font-size: 1.05rem;
 }
 
-.flight-section {
-    margin-bottom: 2vh;
-    background: linear-gradient(135deg, rgba(111, 99, 255, 0.08), rgba(111, 99, 255, 0.02));
-    border-left: 4px solid #6c63ff;
-    border-radius: 0.5rem;
-    padding: 1.5rem;
-    transition: all 0.3s ease;
-}
-
-.flight-section:last-child {
-    margin-bottom: 0;
-}
-
-.flight-section h3 {
-    color: #6c63ff;
-    margin: 0 0 1rem 0;
-    font-size: 1.1rem;
-    font-weight: 600;
+.pase-linea {
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    color: #fff;
 }
 
-.flight-section h3::before {
-    content: "✈";
-    font-size: 1.2rem;
+.pase-linea span {
+    flex: 1;
+    border-top: 2px dashed rgba(255, 255, 255, 0.45);
 }
 
-.flight-info {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
+.pase-linea .ico {
+    font-size: 1.4rem;
+    transform: rotate(45deg);
 }
 
-.payment-section {
-    margin-bottom: 2vh;
-    background: linear-gradient(135deg, rgba(111, 99, 255, 0.08), rgba(111, 99, 255, 0.02));
-    border-left: 4px solid #6c63ff;
-    border-radius: 0.5rem;
-    padding: 1.5rem;
-    transition: all 0.3s ease;
+.pase-datos {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1.6fr 1fr 1fr 1fr;
+    gap: 1rem;
+    margin: 0;
+    padding: 1.25rem clamp(1.25rem, 3vw, 1.75rem);
+    border: 1px solid var(--linea);
+    border-top: 0;
+    border-radius: 0 0 var(--radio-lg) var(--radio-lg);
 }
 
-.payment-section:last-child {
-    margin-bottom: 0;
+/* Muescas del talón */
+.pase-datos::before,
+.pase-datos::after {
+    content: '';
+    position: absolute;
+    top: -11px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--fondo);
 }
 
-.payment-section h3 {
-    color: #6c63ff;
-    margin: 0 0 1rem 0;
-    font-size: 1.1rem;
+.pase-datos::before {
+    left: -11px;
+}
+
+.pase-datos::after {
+    right: -11px;
+}
+
+.pase-datos dt {
+    color: var(--texto-suave);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.pase-datos dd {
+    margin: 0.15rem 0 0;
+    color: var(--tinta);
     font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+    overflow-wrap: anywhere;
 }
 
-.payment-info {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-}
-
-.payment-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.75rem 1rem;
-    background: rgba(255, 255, 255, 0.5);
-    border: 1px solid rgba(111, 99, 255, 0.1);
-    border-radius: 0.4rem;
-    transition: all 0.2s ease;
-}
-
-.payment-row:hover {
-    background: rgba(255, 255, 255, 0.8);
-    border-color: rgba(111, 99, 255, 0.2);
-}
-
-.payment-row.total {
-    font-weight: 600;
-    font-size: 1.1rem;
-    background: linear-gradient(135deg, rgba(111, 99, 255, 0.15), rgba(111, 99, 255, 0.08));
-    border: 2px solid #6c63ff;
-    color: #6c63ff;
-    padding: 1rem 1.2rem;
-}
-
-.info-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.75rem 1rem;
-    background: rgba(255, 255, 255, 0.5);
-    border: 1px solid rgba(111, 99, 255, 0.1);
-    border-radius: 0.4rem;
-    transition: all 0.2s ease;
-}
-
-.info-row:hover {
-    background: rgba(255, 255, 255, 0.8);
-    border-color: rgba(111, 99, 255, 0.2);
-}
-
-.label {
-    font-weight: 600;
-    color: #6c63ff;
-    font-size: 0.95rem;
-    min-width: 140px;
-}
-
-.value {
-    color: #333;
-    text-align: right;
-    font-weight: 500;
-}
-
-.summary-detail {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 1.2rem;
-    background: rgba(255, 255, 255, 0.5);
-    border: 1px solid rgba(111, 99, 255, 0.1);
-    border-radius: 0.4rem;
-    margin-bottom: 0.75rem;
-    transition: all 0.2s ease;
-}
-
-.summary-detail:hover {
-    background: rgba(255, 255, 255, 0.8);
-    border-color: rgba(111, 99, 255, 0.2);
-}
-
-.detail-label {
-    font-weight: 600;
-    color: #6c63ff;
-    font-size: 0.95rem;
-    min-width: 140px;
-}
-
-.detail-value {
-    color: #333;
-    text-align: right;
-    font-weight: 500;
-}
-
-.summary-detail.total {
-    font-weight: 600;
-    font-size: 1.2rem;
-    background: linear-gradient(135deg, rgba(111, 99, 255, 0.15), rgba(111, 99, 255, 0.08));
-    border: 2px solid #6c63ff;
-    color: #6c63ff;
-    padding: 1.2rem 1.5rem;
-}
-
-.payment-summary h2,
-.flight-details h2 {
-    color: #6c63ff;
-    margin-bottom: 1.5vh;
-}
-
-.card {
-    background-color: rgb(255, 255, 255);
-    cursor: pointer;
-}
-
-.card:hover:not(.selected) {
-    background-color: #8987b8;
-}
-
-.card:hover:not(.selected) p {
-    color: white;
-}
-
-.selected {
-    background-color: #6c63ff;
-}
-
-.selected p {
-    color: white;
-}
-
-.b-reservas a {
-    text-decoration: none;
-}
-
+/* ---------- Acordeones ---------- */
 .accordion-item {
-    margin-bottom: 1rem;
-    padding: 0;
-}
-
-details.accordion-item {
-    cursor: pointer;
-}
-
-details.accordion-item> :not(summary) {
-    padding: 1.5rem 1.5rem 1.5rem 1.5rem;
+    border: 1px solid var(--linea);
+    border-radius: var(--radio-lg);
+    background: var(--superficie);
+    box-shadow: var(--sombra-sm);
 }
 
 .accordion-summary {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding: 1rem;
-    background: linear-gradient(135deg, rgba(111, 99, 255, 0.1), rgba(111, 99, 255, 0.05));
-    border-radius: 0.5rem 0.5rem 0 0;
-    list-style: none;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    user-select: none;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.1rem 1.4rem;
+    border-radius: var(--radio-lg);
+    transition: background-color 0.2s ease;
 }
 
 .accordion-summary:hover {
-    background: linear-gradient(135deg, rgba(111, 99, 255, 0.15), rgba(111, 99, 255, 0.1));
+    background: var(--fondo);
 }
 
 .accordion-summary h2 {
-    margin: 0;
-    color: #6c63ff;
-    font-size: 1.2rem;
-    flex: 1;
+    font-size: 1.08rem;
 }
 
 .accordion-icon {
-    display: inline-block;
-    transition: transform 0.3s ease;
-    font-size: 1rem;
-    color: #6c63ff;
-    margin-left: 1rem;
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--marca-suave);
+    color: var(--marca-700);
+    transition: transform 0.35s var(--suave);
 }
 
-details[open] .accordion-icon {
+.accordion-item[open] .accordion-icon {
     transform: rotate(180deg);
 }
 
-details[open] .accordion-summary {
-    border-radius: 0.5rem 0.5rem 0 0;
-    background: linear-gradient(135deg, rgba(111, 99, 255, 0.15), rgba(111, 99, 255, 0.1));
+.flight-section,
+.payment-section {
+    padding: 0 1.4rem 1.1rem;
 }
 
-details .accordion-summary::-webkit-details-marker {
-    display: none;
+.payment-section h3 {
+    margin-bottom: 0.25rem;
+    padding-top: 0.5rem;
+    color: var(--texto-suave);
+    font-size: 0.74rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
 }
 
-details .accordion-summary::marker {
-    display: none;
+.info-row,
+.payment-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.65rem 0;
+    border-top: 1px dashed var(--linea);
 }
 
-footer {
-    grid-column: 1 / 3;
+.flight-info .info-row:first-child {
+    border-top: 1px solid var(--linea);
 }
 
-@media (max-width: 700px) {
+.info-row .label,
+.detail-label {
+    color: var(--texto-suave);
+    font-size: 0.92rem;
+}
+
+.info-row .value,
+.detail-value {
+    color: var(--tinta);
+    font-weight: 600;
+    text-align: right;
+}
+
+.payment-row.total {
+    margin: 0.25rem 0;
+    padding: 0.85rem 1rem;
+    border: 0;
+    border-radius: var(--radio-sm);
+    background: var(--marca-suave);
+}
+
+.payment-row.total .detail-label {
+    color: var(--marca-700);
+    font-weight: 700;
+}
+
+.payment-row.total .detail-value {
+    font-family: var(--fuente-mono);
+    font-size: 1.25rem;
+    font-weight: 500;
+}
+
+.payment-row.total + .payment-row {
+    border-top: 0;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 980px) {
     .grid-reservas {
-        padding: 1vh;
-        gap: 1vh;
-        grid-template-columns: 1fr;
-        grid-template-rows: auto;
-    }
-
-    main.b {
-        grid-column: 1 / 2;
-        grid-row: auto;
-    }
-
-    .accordion-container {
-        grid-column: 1 / 2;
-        grid-row: auto;
-    }
-
-    footer {
-        grid-column: 1 / 2;
-        grid-row: auto;
+        grid-template-columns: minmax(0, 1fr);
     }
 }
 
-@media (max-width: 480px) {
-
-    .payment-row,
-    .info-row,
-    .summary-detail {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.5rem;
-    }
-
-    .label,
-    .detail-label {
-        min-width: auto;
-    }
-
-    .value,
-    .detail-value {
-        text-align: left;
+@media (max-width: 560px) {
+    .pase-datos {
+        grid-template-columns: 1fr 1fr;
     }
 }

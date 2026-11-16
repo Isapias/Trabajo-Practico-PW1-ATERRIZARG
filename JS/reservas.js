@@ -4,8 +4,15 @@ if (!usuario) {
     window.location.href = "./login.html";
 } else {
     const lista = document.getElementById("lista-reservas");
+    const detalle = document.getElementById("detalle-reserva");
+    const icono = ATERRIZARG.icono;
 
     const reservas = JSON.parse(localStorage.getItem("reservas_" + usuario)) || [];
+
+    function escribir(id, texto) {
+        const elemento = document.getElementById(id);
+        if (elemento) elemento.textContent = texto;
+    }
 
     // Mostramos todos los datos de la reserva que toco el usuario
     function mostrarDetallesDeReserva(reserva) {
@@ -19,6 +26,20 @@ if (!usuario) {
         document.getElementById("duracion").textContent = reserva.duracion;
         document.getElementById("numero-vuelo").textContent = reserva.numeroVuelo;
 
+        // pase de abordar
+        const asientos = reserva.asientos && reserva.asientos.length > 0 ? reserva.asientos.join(", ") : "—";
+
+        escribir("pase-origen-cod", ATERRIZARG.codigoCiudad(reserva.origen));
+        escribir("pase-origen", reserva.origen);
+        escribir("pase-salida", reserva.horarioSalida);
+        escribir("pase-destino-cod", ATERRIZARG.codigoCiudad(reserva.destino));
+        escribir("pase-destino", reserva.destino);
+        escribir("pase-llegada", reserva.horarioLlegada);
+        escribir("pase-pasajero", reserva.pasajero?.nombre || "—");
+        escribir("pase-fecha", reserva.fechaSalida);
+        escribir("pase-vuelo", reserva.numeroVuelo);
+        escribir("pase-asientos", asientos);
+
         // calculamos el total del pago
         const cantPasajeros = reserva.cantidadDePasajeros || 1;
         const precioUnitario = reserva.precio || 0;
@@ -26,13 +47,13 @@ if (!usuario) {
         const total = (precioUnitario * cantPasajeros) - descuento;
 
         document.getElementById("cantidad-de-pasajeros").textContent =
-            `${cantPasajeros} x $${precioUnitario} USD`;
+            `${cantPasajeros} x U$D ${precioUnitario}`;
 
         document.getElementById("descuento").textContent =
-            `-$${descuento} USD`;
+            `- U$D ${descuento}`;
 
         document.getElementById("pago-total").textContent =
-            `$${total} USD`;
+            `U$D ${total}`;
 
         // nos fijamos que metodo de pago uso
         let metodoText = "";
@@ -55,37 +76,74 @@ if (!usuario) {
     }
 
     if (reservas.length === 0) {
-        lista.innerHTML = `<p>No tienes reservas realizadas.</p>`;
+        // sin reservas: ocultamos el detalle y ofrecemos buscar un vuelo
+        if (detalle) detalle.classList.add("oculto");
+        lista.parentElement.classList.add("sin-reservas");
+
+        lista.innerHTML = `
+            <div class="estado-vacio">
+                ${icono("ticket")}
+                <h2>No tienes reservas realizadas.</h2>
+                <p>Cuando reserves un vuelo lo vas a ver acá, con tu pase de abordar y el detalle del pago.</p>
+                <a class="btn btn-primario" href="../index.html">${icono("search")} Buscar vuelos</a>
+            </div>
+        `;
     } else {
         reservas.forEach(function (reserva, index) {
             const card = document.createElement("div");
             card.classList.add("card");
+            card.setAttribute("role", "button");
+            card.setAttribute("tabindex", "0");
+
+            const asientos = reserva.asientos && reserva.asientos.length > 0 ? reserva.asientos.join(", ") : "";
 
             card.innerHTML = `
-            <p>${reserva.origen} → ${reserva.destino}</p>
-            <p>${reserva.horarioSalida} - ${reserva.horarioLlegada}</p>
+            <div class="card-ruta">
+                <p>${reserva.origen} → ${reserva.destino}</p>
+                <span class="badge badge-plano mono">${reserva.numeroVuelo}</span>
+            </div>
+            <ul class="card-meta">
+                <li>${icono("calendar")} ${reserva.fechaSalida}</li>
+                <li>${icono("clock")} <span class="mono">${reserva.horarioSalida} - ${reserva.horarioLlegada}</span></li>
+                ${asientos ? `<li>${icono("seat")} <span class="mono">${asientos}</span></li>` : ""}
+            </ul>
         `;
 
-            // si hace click, cambiamos los datos sin recargar la pagina
-            card.addEventListener("click", function () {
+            function seleccionarReserva() {
                 // desmarcamos las otras tarjetas y pintamos la que clickeo
-                lista.querySelectorAll(".card").forEach(c => c.classList.remove("selected"));
+                lista.querySelectorAll(".card").forEach(c => {
+                    c.classList.remove("selected");
+                    c.setAttribute("aria-pressed", "false");
+                });
                 card.classList.add("selected");
+                card.setAttribute("aria-pressed", "true");
 
                 mostrarDetallesDeReserva(reserva);
+            }
+
+            // si hace click, cambiamos los datos sin recargar la pagina
+            card.addEventListener("click", seleccionarReserva);
+
+            card.addEventListener("keydown", function (e) {
+                if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    seleccionarReserva();
+                }
             });
 
-            lista.appendChild(card);
+            // las más nuevas quedan arriba
+            lista.prepend(card);
         });
 
         // por defecto mostramos siempre la ultima reserva que agrego
         const ultimaReserva = reservas[reservas.length - 1];
         mostrarDetallesDeReserva(ultimaReserva);
 
-        // y le ponemos la clase selected a esa ultima tarjeta
-        const ultimaCard = lista.lastElementChild;
+        // y le ponemos la clase selected a esa ultima tarjeta (quedó primera en la lista)
+        const ultimaCard = lista.firstElementChild;
         if (ultimaCard) {
             ultimaCard.classList.add("selected");
+            ultimaCard.setAttribute("aria-pressed", "true");
         }
     }
 }

@@ -77,7 +77,7 @@ function renderizarMailsRespaldo() {
         if (div) {
             div.innerHTML =
                 `<span>${usuarioActual.mailsRespaldo[i]}</span>
-                <button type="button" class="btn-borrar-respaldo" onclick="borrarCorreo(${i})">Borrar</button>`;
+                <button type="button" class="btn btn-peligro btn-chico btn-borrar-respaldo" onclick="borrarCorreo(${i})">Borrar</button>`;
             div.classList.remove("oculto");
         }
     }
@@ -134,20 +134,20 @@ function inicializarFormulario() {
             if (prefPais || codArea || nroTel) {
                 const regexPrefPais = /^\+[1-9]\d{0,3}$/;
                 if (!regexPrefPais.test(prefPais)) {
-                    alert("Ingrese un prefijo con formáto válido: +000");
+                    notificar("Ingrese un prefijo con formáto válido: +000");
                     return;
                 }
                 if (codArea) {
                     const regexCodArea = /^[1-9]\d{1,3}$/;
                     if (!regexCodArea.test(codArea)) {
-                        alert("Ingrese un código de área con formáto válido: 000");
+                        notificar("Ingrese un código de área con formáto válido: 000");
                         return;
                     }
                 }
                 if (nroTel) {
                     const regexNroTel = /^[1-9]\d{6,14}$/;
                     if (!regexNroTel.test(nroTel)) {
-                        alert("Ingrese un número de teléfono con formáto válido: 0000000");
+                        notificar("Ingrese un número de teléfono con formáto válido: 0000000");
                         return;
                     }
                 }
@@ -170,7 +170,7 @@ function inicializarFormulario() {
             if (nuevoEmail) {
                 const regexCorreo = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
                 if (!regexCorreo.test(nuevoEmail)) {
-                    alert("El formato del correo de respaldo no es válido.");
+                    notificar("El formato del correo de respaldo no es válido.");
                     return;
                 }
 
@@ -179,7 +179,7 @@ function inicializarFormulario() {
                     renderizarMailsRespaldo();
                     verificarCantidadDeRespaldos();
                 } else {
-                    alert("El email ya existe, es el correo principal, o se alcanzó el límite de 2 correos de respaldo.");
+                    notificar("El email ya existe, es el correo principal, o se alcanzó el límite de 2 correos de respaldo.");
                     return;
                 }
             }
@@ -195,7 +195,7 @@ function inicializarFormulario() {
                 cambiarEstadoTelefono(true);
             }
 
-            alert("Datos guardados");
+            notificar("Datos guardados");
         });
     }
     const botonEliminar = document.getElementById("btn-eliminar");

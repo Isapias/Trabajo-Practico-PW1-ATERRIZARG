@@ -1,10 +1,10 @@
 // =========================
 // VERIFICAR LOGIN
 // =========================
-const usuarioLogueado = localStorage.getItem("usuarioLogueado");
+const sesionActiva = localStorage.getItem("usuarioLogueado");
 
-if (!usuarioLogueado) {
-    alert("Debe iniciar sesión");
+if (!sesionActiva) {
+    notificar("Debe iniciar sesión");
     window.location.href = "./login.html";
 } else {
     // =========================
@@ -14,7 +14,7 @@ if (!usuarioLogueado) {
 
     // Si no hay vuelo seleccionado
     if (!vuelo) {
-        alert("No hay ningún vuelo seleccionado");
+        notificar("No hay ningún vuelo seleccionado");
         window.location.href = "../index.html";
     } else {
 
@@ -30,7 +30,14 @@ document.getElementById("ruta-vuelo").textContent = `${vuelo.origen} → ${vuelo
 document.getElementById("fecha-vuelo").textContent = vuelo.fechaSalida;
 document.getElementById("horario-vuelo").textContent = `${vuelo.horarioSalida} - ${vuelo.horarioLlegada}`;
 document.getElementById("numero-vuelo").textContent = vuelo.numeroVuelo;
-document.getElementById("precio-vuelo").textContent = `$${vuelo.precio}`;
+document.getElementById("precio-vuelo").textContent = `U$D ${vuelo.precio}`;
+
+// Asientos elegidos en el paso anterior
+const asientosElegidos = JSON.parse(localStorage.getItem("asientosSeleccionados")) || [];
+const resumenAsientos = document.getElementById("asientos-vuelo");
+if (resumenAsientos && asientosElegidos.length > 0) {
+    resumenAsientos.textContent = asientosElegidos.join(", ");
+}
 
 // Actualizar cantidad de pasajeros en el HTML
 const summaryItems = document.querySelectorAll(".summary-item");
@@ -42,7 +49,14 @@ summaryItems.forEach(item => {
 
 function actualizarTotal() {
     const finalTotal = totalBase - descuentoAplicado;
-    document.getElementById("total-vuelo").textContent = `$${finalTotal}`;
+    document.getElementById("total-vuelo").textContent = `U$D ${finalTotal}`;
+
+    // Aviso del descuento debajo del código
+    const avisoDescuento = document.getElementById("descuento-aplicado");
+    if (avisoDescuento) {
+        avisoDescuento.textContent = `Descuento aplicado: - U$D ${descuentoAplicado}`;
+        avisoDescuento.classList.toggle("oculto", descuentoAplicado === 0);
+    }
 }
 actualizarTotal();
 
@@ -55,9 +69,9 @@ if (btnDescuento && inputDescuento) {
         const codigo = inputDescuento.value.trim().toUpperCase();
         if (codigo === "DESCUENTO10" || codigo === "ATERRIZARG") {
             descuentoAplicado = Math.round(totalBase * 0.1); // 10% de descuento
-            alert(`¡Código aplicado correctamente! Descuento de $${descuentoAplicado} USD.`);
+            notificar(`¡Código aplicado correctamente! Descuento de $${descuentoAplicado} USD.`);
         } else {
-            alert("Código de descuento inválido");
+            notificar("Código de descuento inválido");
             descuentoAplicado = 0;
             inputDescuento.value = "";
         }
@@ -134,17 +148,17 @@ formulario.addEventListener("submit", function (e) {
     // =========================
     // 1. Validar datos personales comunes
     if (nombre === "" || documento === "" || correo === "") {
-        alert("Complete todos los campos obligatorios del pasajero");
+        notificar("Complete todos los campos obligatorios del pasajero");
         return;
     }
 
     if (nombre.length < 2) {
-        alert("Ingrese un nombre válido")
+        notificar("Ingrese un nombre válido")
         return;
     }
 
     if (documento.length < 6 || documento.length > 9) {
-        alert("Ingrese un documento válido")
+        notificar("Ingrese un documento válido")
         return;
     }
 
@@ -153,7 +167,7 @@ formulario.addEventListener("submit", function (e) {
     let tarjetaMascara = "No aplica";
     if (metodoPagoActual === "creditCard") {
         if (numeroTarjeta === "" || mes === "" || anio === "" || cvv === "") {
-            alert("Complete los datos de su tarjeta de crédito");
+            notificar("Complete los datos de su tarjeta de crédito");
             return;
         } else {
             tarjetaMascara = "**** **** **** " + numeroTarjeta.slice(-4);
@@ -252,7 +266,7 @@ formulario.addEventListener("submit", function (e) {
     // =========================
     // CONFIRMAR
     // =========================
-    alert("Pago realizado correctamente");
+    notificar("Pago realizado correctamente");
     window.location.href = "./reservas.html";
 });
 
@@ -286,17 +300,18 @@ function inicializarTarjetasGuardadasCheckout() {
 
         item.innerHTML = `
             <div class="tarjeta-info-checkout">
-                <span class="icono-tarjeta-item">💳</span>
+                <span class="icono-tarjeta-item">${ATERRIZARG.icono("card")}</span>
                 <div>
                     <div class="nro">**** **** **** ${ultimosCuatro}</div>
                     <div class="titular">${tarjeta.titular}</div>
                 </div>
             </div>
-            <button type="button" class="btn-seleccionar-tarjeta">Seleccionar</button>
+            <button type="button" class="btn btn-suave btn-chico btn-seleccionar-tarjeta">Seleccionar</button>
         `;
 
         item.querySelector(".btn-seleccionar-tarjeta").addEventListener("click", () => {
             cargarTarjetaFormulario(tarjeta);
+            marcarTarjetaElegida(item);
         });
 
         lista.appendChild(item);
@@ -304,6 +319,17 @@ function inicializarTarjetasGuardadasCheckout() {
 
     // Cargar automáticamente la primera tarjeta
     cargarTarjetaFormulario(tarjetasGuardadas[0]);
+    marcarTarjetaElegida(lista.firstElementChild);
+}
+
+// Resalta en la lista la tarjeta guardada que está cargada en el formulario
+function marcarTarjetaElegida(itemElegido) {
+    document.querySelectorAll(".tarjeta-item-checkout").forEach(item => {
+        const elegida = item === itemElegido;
+        item.classList.toggle("elegida", elegida);
+        const boton = item.querySelector(".btn-seleccionar-tarjeta");
+        if (boton) boton.textContent = elegida ? "Seleccionada" : "Seleccionar";
+    });
 }
 
 function cargarTarjetaFormulario(tarjeta) {
@@ -312,11 +338,46 @@ function cargarTarjetaFormulario(tarjeta) {
     const selectAnio = document.getElementById("anio-vto");
     const inputCvv = document.getElementById("cvv");
 
-    if (inputNumero) inputNumero.value = tarjeta.nroTarjeta || "";
+    // El perfil permite guardar el número con espacios o guiones: acá se usan solo los dígitos
+    if (inputNumero) inputNumero.value = (tarjeta.nroTarjeta || "").replace(/\D/g, "");
     if (selectMes) selectMes.value = tarjeta.mesVto || "";
     if (selectAnio) selectAnio.value = tarjeta.anioVto || "";
     if (inputCvv) inputCvv.value = tarjeta.codigoSeg || "";
+
+    actualizarVistaTarjeta(tarjeta.titular);
 }
+
+// =================================
+// VISTA PREVIA DE LA TARJETA
+// =================================
+function actualizarVistaTarjeta(titularGuardado) {
+    const vistaNumero = document.getElementById("tp-numero");
+    const vistaTitular = document.getElementById("tp-titular");
+    const vistaVto = document.getElementById("tp-vto");
+
+    if (!vistaNumero || !vistaTitular || !vistaVto) return;
+
+    const digitos = document.getElementById("numero-tarjeta").value.replace(/\D/g, "").slice(0, 16);
+    const grupos = digitos.padEnd(16, "•").match(/.{4}/g);
+    vistaNumero.textContent = grupos.join(" ");
+
+    const titular =
+        (typeof titularGuardado === "string" && titularGuardado) ||
+        document.getElementById("nombre-completo").value.trim();
+    vistaTitular.textContent = titular ? titular.toUpperCase() : "NOMBRE Y APELLIDO";
+
+    const mes = document.getElementById("mes-vto").value;
+    const anio = document.getElementById("anio-vto").value;
+    vistaVto.textContent =
+        (mes ? mes.padStart(2, "0") : "MM") + "/" + (anio ? anio.slice(-2) : "AA");
+}
+
+["numero-tarjeta", "nombre-completo", "mes-vto", "anio-vto"].forEach(id => {
+    const campo = document.getElementById(id);
+    if (!campo) return;
+    campo.addEventListener("input", () => actualizarVistaTarjeta());
+    campo.addEventListener("change", () => actualizarVistaTarjeta());
+});
 
 // Inicializar al cargar la página
 inicializarTarjetasGuardadasCheckout();

@@ -1,0 +1,397 @@
+/* =========================================================
+   RESULTADOS DE BÚSQUEDA · Filtros y tarjetas de vuelo
+   ========================================================= */
+
+.resumen-busqueda {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 1.25rem;
+    margin-top: 0.75rem;
+    color: var(--texto-suave);
+    font-weight: 500;
+}
+
+.resumen-busqueda span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+}
+
+.layout-busqueda {
+    display: grid;
+    grid-template-columns: 280px minmax(0, 1fr);
+    align-items: start;
+    gap: 1.5rem;
+}
+
+/* ---------- Filtros ---------- */
+.filtros {
+    position: sticky;
+    top: 5.5rem;
+    padding: 1.25rem;
+}
+
+.filtros h2 {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding-bottom: 0.9rem;
+    font-size: 1.05rem;
+}
+
+.filtros h2 .ico {
+    color: var(--marca);
+}
+
+.filtros details {
+    border-top: 1px solid var(--linea);
+}
+
+.filtros summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.9rem 0;
+    color: var(--tinta);
+    font-size: 0.94rem;
+    font-weight: 700;
+}
+
+.filtros summary .ico {
+    color: var(--texto-suave);
+    transition: transform 0.3s var(--suave);
+}
+
+.filtros details[open] summary .ico {
+    transform: rotate(180deg);
+}
+
+.filtro-cuerpo {
+    display: grid;
+    gap: 0.15rem;
+    padding-bottom: 0.9rem;
+}
+
+.filtro-cuerpo label {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.45rem 0.5rem;
+    border-radius: 10px;
+    font-size: 0.94rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.filtro-cuerpo label:hover {
+    background: var(--fondo);
+}
+
+#precio-actual {
+    margin-top: 0.4rem;
+    color: var(--marca-700);
+    font-weight: 500;
+}
+
+/* ---------- Resultados ---------- */
+.contador-vuelos {
+    margin-bottom: 0.9rem;
+    color: var(--texto-suave);
+    font-size: 0.92rem;
+    font-weight: 600;
+}
+
+#contenedor-vuelos {
+    display: grid;
+    gap: 1rem;
+}
+
+/* busqueda.js alterna display entre "flex" y "none" en cada .card */
+#contenedor-vuelos .card {
+    display: flex;
+    animation: aparecer 0.6s var(--suave) both;
+}
+
+.vuelo-card {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 150px minmax(0, 1fr) auto;
+    align-items: stretch;
+    min-width: 0;
+    border: 1px solid var(--linea);
+    border-radius: var(--radio-lg);
+    background: var(--superficie);
+    box-shadow: var(--sombra-sm);
+    transition:
+        transform 0.35s var(--suave),
+        box-shadow 0.3s ease,
+        border-color 0.3s ease;
+}
+
+.vuelo-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--marca-borde);
+    box-shadow: var(--sombra);
+}
+
+.vuelo-logo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    padding: 1.25rem 1rem;
+    border-right: 1px solid var(--linea);
+}
+
+.logo-aerolinea {
+    width: 112px;
+    height: 44px;
+    object-fit: contain;
+}
+
+/* El logo de Aerolíneas tiene mucho margen en blanco: se recorta para que no se vea chico */
+.logo-AerolineasArgentinas {
+    height: 54px;
+    object-fit: cover;
+}
+
+.vuelo-numero {
+    padding: 0.15rem 0.55rem;
+    border-radius: 8px;
+    background: var(--fondo);
+    color: var(--texto-suave);
+    font-size: 0.8rem;
+}
+
+.vuelo-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1rem;
+    min-width: 0;
+    padding: 1.4rem 1.5rem;
+}
+
+.ruta {
+    display: grid;
+    grid-template-columns: auto minmax(90px, 1fr) auto;
+    align-items: center;
+    gap: 1rem;
+}
+
+.ruta-punto {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.ruta-punto strong {
+    color: var(--tinta);
+    font-size: clamp(1.35rem, 2.4vw, 1.7rem);
+    font-weight: 500;
+    line-height: 1.15;
+}
+
+.ruta-punto span {
+    color: var(--texto-suave);
+    font-size: 0.88rem;
+}
+
+.ruta-llegada {
+    text-align: right;
+}
+
+.ruta-linea {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.ruta-duracion {
+    color: var(--texto-suave);
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.ruta-trazo {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 20px;
+    color: var(--marca);
+}
+
+.ruta-trazo::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    border-top: 2px dashed var(--linea-fuerte);
+}
+
+.ruta-trazo .ico {
+    position: relative;
+    padding: 0 6px;
+    box-sizing: content-box;
+    background: var(--superficie);
+    font-size: 1.1rem;
+    transform: rotate(45deg);
+    transition: translate 0.6s var(--suave);
+}
+
+.vuelo-card:hover .ruta-trazo .ico {
+    translate: 14px 0;
+}
+
+.datos-vuelo {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+
+.datos-vuelo li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.28rem 0.7rem;
+    border-radius: 999px;
+    background: var(--fondo);
+    color: var(--texto);
+    font-size: 0.82rem;
+    font-weight: 500;
+}
+
+.datos-vuelo .ico {
+    color: var(--texto-suave);
+}
+
+.vuelo-precio {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 0.25rem;
+    padding: 1.25rem 1.5rem;
+    border-left: 2px dashed var(--linea);
+}
+
+/* Muescas de "boarding pass" */
+.vuelo-precio::before,
+.vuelo-precio::after {
+    content: '';
+    position: absolute;
+    left: -11px;
+    width: 20px;
+    height: 20px;
+    border: 1px solid var(--linea);
+    border-radius: 50%;
+    background: var(--fondo);
+}
+
+.vuelo-precio::before {
+    top: -11px;
+    clip-path: inset(50% 0 0 0);
+}
+
+.vuelo-precio::after {
+    bottom: -11px;
+    clip-path: inset(0 0 50% 0);
+}
+
+.precio-label {
+    color: var(--texto-suave);
+    font-size: 0.78rem;
+    font-weight: 600;
+}
+
+.vuelo-precio h2 {
+    margin-bottom: 0.6rem;
+    font-size: 1.65rem;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 980px) {
+    .layout-busqueda {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .filtros {
+        position: static;
+    }
+
+    .filtros details:not(:first-of-type) .filtro-cuerpo {
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    }
+}
+
+@media (max-width: 760px) {
+    .vuelo-card {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .vuelo-logo {
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 0.9rem 1.25rem;
+        border-right: 0;
+        border-bottom: 1px solid var(--linea);
+    }
+
+    .logo-aerolinea {
+        width: 96px;
+        height: 36px;
+    }
+
+    .logo-AerolineasArgentinas {
+        height: 46px;
+    }
+
+    .vuelo-info {
+        padding: 1.25rem;
+    }
+
+    .vuelo-precio {
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.5rem 1rem;
+        padding: 1rem 1.25rem;
+        border-left: 0;
+        border-top: 2px dashed var(--linea);
+    }
+
+    .vuelo-precio::before,
+    .vuelo-precio::after {
+        top: -11px;
+        bottom: auto;
+        clip-path: none;
+    }
+
+    .vuelo-precio::before {
+        left: -11px;
+        clip-path: inset(0 0 0 50%);
+    }
+
+    .vuelo-precio::after {
+        left: auto;
+        right: -11px;
+        clip-path: inset(0 50% 0 0);
+    }
+
+    .precio-label {
+        flex-basis: 100%;
+    }
+
+    .vuelo-precio h2 {
+        margin-bottom: 0;
+    }
+}

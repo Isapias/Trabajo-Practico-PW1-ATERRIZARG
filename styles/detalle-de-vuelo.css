@@ -1,145 +1,265 @@
+/* =========================================================
+   SELECCIÓN DE ASIENTOS · Mapa del avión y resumen del vuelo
+   ========================================================= */
+
+.layout-detalle {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 360px;
+    align-items: start;
+    gap: 1.5rem;
+}
+
+.c-detalle h1 {
+    font-size: clamp(1.6rem, 3vw, 2.1rem);
+}
+
+.ayuda-asientos {
+    margin-top: 0.5rem;
+    color: var(--texto-suave);
+}
+
+.ayuda-asientos.completo {
+    color: var(--ok);
+    font-weight: 600;
+}
+
+/* ---------- Leyenda ---------- */
 .disponible-ocupado-container {
     display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem 1.5rem;
+    margin-top: 1.25rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.disponible-ocupado-container span {
+    display: inline-flex;
     align-items: center;
+    gap: 0.5rem;
+}
+
+.disponible-ocupado-container i {
+    width: 18px;
+    height: 18px;
+    border-radius: 6px;
 }
 
 .caja-disponible {
-    height: 1em;
-    width: 1em;
-    background-color: #6c63ff;
-    margin-right: 0.2em;
-    border-radius: 0.2em;
+    background: #c5bfff;
+}
+
+.caja-seleccionado {
+    background: var(--marca);
+    box-shadow: 0 0 0 3px rgba(107, 95, 255, 0.22);
 }
 
 .caja-ocupado {
-    height: 1em;
-    width: 1em;
-    background-color: #b6b6b7;
-    margin-right: 0.2em;
-    border-radius: 0.2em;
-    margin-left: 1em;
+    background: #dcdbe6;
+}
+
+/* ---------- Avión ---------- */
+.avion {
+    max-width: 540px;
+    margin: 1.75rem auto 0;
+    padding: 0 clamp(0.75rem, 3vw, 1.5rem) 1.75rem;
+    border: 2px solid var(--linea-fuerte);
+    border-radius: 50% 50% 28px 28px / 150px 150px 28px 28px;
+    background: linear-gradient(180deg, #f1efff 0%, #ffffff 26%);
+}
+
+.avion-nariz {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    height: 132px;
+    padding-bottom: 1.1rem;
+    color: var(--texto-suave);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+/* Ventanilla de la cabina */
+.avion-nariz::before {
+    content: '';
+    position: absolute;
+    top: 30px;
+    left: 50%;
+    width: 96px;
+    height: 34px;
+    border: 2px solid var(--linea-fuerte);
+    border-radius: 60px 60px 12px 12px;
+    background: #fff;
+    transform: translateX(-50%);
 }
 
 .asiento-container {
     display: grid;
-    grid-template-columns: 0.3fr repeat(4, 1fr) 3fr repeat(4, 1fr);
-    grid-template-rows: 0.3fr repeat(8, 1fr);
-    height: 70%;
-    padding-top: 2em;
-    justify-items: center;
-    gap: 0.5em;
+    grid-template-columns: 1.4rem repeat(4, minmax(0, 44px)) 1.6rem repeat(4, minmax(0, 44px));
+    justify-content: center;
+    align-items: center;
+    gap: clamp(3px, 1vw, 7px);
+    padding-top: 1rem;
+    border-top: 1.5px dashed var(--linea-fuerte);
 }
 
-.grid-detalles {
+.letra,
+.numero,
+.pasillo {
     display: grid;
-    grid-template-columns: 1fr 3fr 1fr;
-    grid-template-rows: auto 1fr auto;
-    min-height: 100vh;
-    width: 100%;
-    padding: 2vh;
-    gap: 2vh;
+    place-items: center;
+    font-family: var(--fuente-mono);
+    font-size: 0.82rem;
+    color: var(--texto-suave);
 }
 
-svg {
-    height: 2em;
-}
-
-.disponible {
-    fill: #6c63ff;
-    cursor: pointer;
-}
-
-.ocupado {
-    fill: #b6b6b7;
-    cursor: not-allowed;
-    pointer-events: none;
-}
-
-.seleccionado {
-    fill: rgb(237, 71, 71);
-}
-
-.botones-container {
-    display: flex;
-    justify-content: space-around;
-}
-
-.botones-container button,
-.botones-container button p {
-    margin: 0;
+.letra {
+    padding-bottom: 0.25rem;
+    font-weight: 500;
+    color: var(--tinta);
 }
 
 .pasillo {
+    font-size: 0.68rem;
+    color: var(--linea-fuerte);
+}
+
+/* Asientos: detalle-de-vuelo.js les pone disponible / seleccionado / ocupado */
+.svg {
     width: 100%;
-    text-align: center;
-    border-left: 1px solid rgb(170, 169, 169);
-    ;
-    border-right: 1px solid rgb(170, 169, 169);
+    height: auto;
+    border-radius: 8px;
+    transition:
+        transform 0.25s var(--suave),
+        fill 0.2s ease,
+        filter 0.2s ease;
 }
 
-a {
-    text-decoration: none;
-}
-
-.disponible:hover {
-    fill: rgb(170, 97, 97);
+.svg.disponible {
+    fill: #c5bfff;
     cursor: pointer;
-    transition: 0.2s;
 }
 
-
-
-.ida-vuelta {
-    color: black;
-    background-color: rgba(255, 255, 255, 0.6);
+.svg.disponible:hover {
+    fill: var(--marca-600);
+    transform: translateY(-3px) scale(1.08);
 }
 
-.detalle-card {
-    background-color: rgba(255, 255, 255, 0.6);
-    border-radius: 1em;
+.svg.seleccionado {
+    fill: var(--marca);
+    cursor: pointer;
+    filter: drop-shadow(0 6px 8px rgba(107, 95, 255, 0.5));
+    transform: scale(1.08);
 }
 
-@media screen and (max-width: 700px) {
-    .grid-detalles {
-        grid-template-columns: 1fr;
-        grid-template-rows: auto;
-        min-height: 100vh;
-        width: 100%;
-        gap: 1vh;
-        padding: 1vh;
+.svg.ocupado {
+    fill: #dcdbe6;
+    cursor: not-allowed;
+}
+
+.svg:focus-visible {
+    outline: 3px solid rgba(107, 95, 255, 0.55);
+    outline-offset: 1px;
+}
+
+/* ---------- Resumen ---------- */
+.resumen-vuelo {
+    position: sticky;
+    top: 5.5rem;
+    display: grid;
+    gap: 1.25rem;
+}
+
+.resumen-vuelo h2 {
+    font-size: 1.2rem;
+}
+
+.detalle-ruta {
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--linea);
+    color: var(--tinta);
+    font-size: 1.2rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+}
+
+.detalle-lista {
+    display: grid;
+    margin: 0;
+}
+
+.detalle-lista > div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.7rem 0;
+    border-bottom: 1px dashed var(--linea);
+}
+
+.detalle-lista dt {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--texto-suave);
+    font-size: 0.92rem;
+}
+
+.detalle-lista dt .ico {
+    color: var(--marca);
+}
+
+.detalle-lista dd {
+    margin: 0;
+    color: var(--tinta);
+    font-weight: 600;
+    text-align: right;
+}
+
+.total {
+    padding: 1rem 1.1rem;
+    border-radius: var(--radio);
+    background: var(--marca-suave);
+}
+
+.total-detalle {
+    color: var(--marca-700);
+    font-size: 0.86rem;
+    font-weight: 600;
+}
+
+.total p {
+    color: var(--tinta);
+    font-family: var(--fuente-mono);
+    font-size: 1.45rem;
+    font-weight: 500;
+}
+
+.botones-container {
+    display: grid;
+    gap: 0.6rem;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 980px) {
+    .layout-detalle {
+        grid-template-columns: minmax(0, 1fr);
     }
 
-    .c.c-detalle {
-        min-height: fit-content;
-        margin-bottom: 2vh;
+    .resumen-vuelo {
+        position: static;
+    }
+}
+
+@media (max-width: 520px) {
+    .avion-nariz {
+        height: 112px;
     }
 
     .asiento-container {
-        display: grid;
-        grid-template-columns: 0.3fr repeat(4, 1fr) 1fr repeat(4, 1fr);
-        grid-template-rows: 0.3fr repeat(8, 1fr);
-        height: 70%;
-        padding-top: 2em;
-        justify-items: center;
-    }
-
-    .botones-container {
-        gap: 1vh;
-        align-items: center;
-    }
-
-    .botones-container button {
-        width: 30%;
-    }
-
-    .asiento-container {
-        padding-top: 1rem;
-    }
-
-    .botones-container button,
-    .botones-container a {
-        box-sizing: border-box;
+        grid-template-columns: 1rem repeat(4, minmax(0, 1fr)) 1.1rem repeat(4, minmax(0, 1fr));
     }
 }
-
-@media screen and (max-width: 480px) {}

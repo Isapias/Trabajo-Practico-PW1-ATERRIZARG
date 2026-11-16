@@ -31,14 +31,14 @@ function inicializarFormulario() {
             const regexTarjeta = /^\d{4}(?:[- ]?\d{4}){3}$/;
 
             if (!regexTarjeta.test(nroTarjeta)) {
-                alert("El número de tarjeta debe tener 16 dígitos y no puede contener letras ni simbolos.");
+                notificar("El número de tarjeta debe tener 16 dígitos y no puede contener letras ni simbolos.");
                 return;
             }
 
             const titular = document.getElementById("titular-tarjeta").value;
             const regexTitular = /^[A-Za-zÁÉÍÓÚáéíóúÑñ ]{0,50}$/;
             if (!regexTitular.test(titular)) {
-                alert("El titular de la tarjeta debe tener máximo 50 letras y no puede contener números ni símbolos.");
+                notificar("El titular de la tarjeta debe tener máximo 50 letras y no puede contener números ni símbolos.");
                 return;
             }
 
@@ -48,14 +48,14 @@ function inicializarFormulario() {
             const regexDocumento = /^[A-Za-z0-9.\s-]{5,15}$/;
             const documento = document.getElementById("documento").value;
             if (!regexDocumento.test(documento)) {
-                alert("El documento debe tener entre 5 y 15 caracteres y no puede contener símbolos.");
+                notificar("El documento debe tener entre 5 y 15 caracteres y no puede contener símbolos.");
                 return;
             }
 
             const regexCVV = /^\d{3,4}$/;
             const codigoSeg = document.getElementById("cvv").value;
             if (!regexCVV.test(codigoSeg)) {
-                alert("El código de seguridad debe tener entre 3 y 4 dígitos.");
+                notificar("El código de seguridad debe tener entre 3 y 4 dígitos.");
                 return;
             }
 
@@ -69,7 +69,7 @@ function inicializarFormulario() {
             }
 
             if (anioParseado < anioActual || (anioParseado === anioActual && parseInt(mesVto) < mesActual)) {
-                alert("La tarjeta esta vencida");
+                notificar("La tarjeta esta vencida");
                 return;
             }
 
@@ -85,7 +85,7 @@ function inicializarFormulario() {
             if (tarjeta.nroTarjeta && tarjeta.titular && tarjeta.mesVto && tarjeta.anioVto && tarjeta.documento && tarjeta.codigoSeg) {
                 guardarNuevaTarjeta(tarjeta);
             } else {
-                alert("No se ingresaron todos los datos");
+                notificar("No se ingresaron todos los datos");
             }
         })
     }
@@ -117,38 +117,38 @@ function inicializarFormulario() {
             const codPostal = document.getElementById("cod-postal").value;
 
             if (!pais || !domicilio || !localidad || !provincia || !codPostal) {
-                alert("No se ingresaron todos los datos");
+                notificar("No se ingresaron todos los datos");
                 return;
             }
 
             if (!pais) {
-                alert("Debe ingresar un pais");
+                notificar("Debe ingresar un pais");
                 return;
             }
 
             const regexDomicilio = /^[A-Za-z0-9ÁÉÍÓÚáéíóúÑñ\s.,#°-]+$/;
 
             if (!regexDomicilio.test(domicilio)) {
-                alert("El domicilio no es válido. Solo se permiten letras, números, espacios y caracteres básicos (., # - °).");
+                notificar("El domicilio no es válido. Solo se permiten letras, números, espacios y caracteres básicos (., # - °).");
                 return;
             }
 
             const regexLocalidad = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/;
 
             if (!regexLocalidad.test(localidad)) {
-                alert("La localidad debe contener solo letras y espacios.");
+                notificar("La localidad debe contener solo letras y espacios.");
                 return;
             }
 
             const regexProvincia = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/;
             if (!regexProvincia.test(provincia)) {
-                alert("La provincia debe contener solo letras y espacios.");
+                notificar("La provincia debe contener solo letras y espacios.");
                 return;
             }
 
             const regexCodPostal = /^(?:\d{4}|[A-Za-z]\d{4}[A-Za-z]{3})$/;
             if (!regexCodPostal.test(codPostal)) {
-                alert("El código postal debe ser de 4 dígitos (ej: 1425) o formato CPA (ej: C1024CWN)");
+                notificar("El código postal debe ser de 4 dígitos (ej: 1425) o formato CPA (ej: C1024CWN)");
                 return;
             }
 
@@ -162,7 +162,7 @@ function inicializarFormulario() {
             usuarioActual.datosFacturacion = datosFacturacion;
             localStorage.setItem("usuarios", JSON.stringify(usuarios));
 
-            alert("Datos de facturación guardados");
+            notificar("Datos de facturación guardados");
             cambiarEstadoFacturacion(true);
             console.log(datosFacturacion);
         });
@@ -175,7 +175,7 @@ function guardarNuevaTarjeta(tarjeta) {
     }
 
     if (usuarioActual.listaTarjetas.length >= 3) {
-        alert("No es posible guardar más de 3 tarjetas.");
+        notificar("No es posible guardar más de 3 tarjetas.");
         return;
     }
 
@@ -183,7 +183,7 @@ function guardarNuevaTarjeta(tarjeta) {
     localStorage.setItem("usuarios", JSON.stringify(usuarios));
     const formTarjeta = document.getElementById("form-medios-pago");
     if (formTarjeta) formTarjeta.reset();
-    alert("Tarjeta guardada");
+    notificar("Tarjeta guardada");
 
     renderizarTarjetasGuardadas();
     verificarCantidadDeTarjetas();
@@ -211,13 +211,13 @@ function renderizarTarjetasGuardadas() {
         if (div) {
             div.innerHTML =
                 `<div class="datos-tarjeta">
-                    <span class="icono-tarjeta">💳</span>
+                    <span class="icono-tarjeta">${ATERRIZARG.icono("card")}</span>
                     <div class="info-tarjeta">
                         <span class="numero-oculto">**** **** **** ${ultimosCuatroNumeros}</span>
                         <span class="titular-tarjeta">${tarjetaGuardada.titular}</span>
                     </div>
                 </div>
-                <button type="button" class="btn-borrar-tarjeta" onclick="borrarTarjeta(${i})">Borrar</button>`;
+                <button type="button" class="btn btn-peligro btn-chico btn-borrar-tarjeta" onclick="borrarTarjeta(${i})">Borrar</button>`;
             div.classList.remove("oculto");
         }
     }

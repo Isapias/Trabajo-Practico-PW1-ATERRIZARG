@@ -1,88 +1,80 @@
-.main-contacto {
-    background: rgba(255, 255, 255, 0.6);
-    border-radius: 1rem;
-    padding: 2vh;
-    display: flex;
-    flex-direction: column;
-    gap: 1vh;
-    grid-row: 2/3;
-    grid-column: 2/3;
-    justify-content: space-evenly;
-    align-items: center;
-    height: 100%;
-    align-self: center;
-}
-
-.main-contacto p {
-    font-size: 1rem;
-}
+/* =========================================================
+   CONTACTO · Canales y formulario
+   ========================================================= */
 
 .grid-contacto {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: 12vh 1fr 12vh;
-    min-height: 100vh;
-    width: 100%;
-    padding: 2vh;
-    gap: 2vh;
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    align-items: start;
+    gap: clamp(1.5rem, 5vw, 4rem);
 }
 
-.main-contacto form {
-    width: 80%;
+.contacto-info {
+    padding-top: clamp(0rem, 2vw, 1.5rem);
 }
 
-.main-contacto p {
-    all: unset;
-    display: block;
+.contacto-sub {
+    max-width: 38ch;
+    margin-top: 0.9rem;
+    color: var(--texto-suave);
+    font-size: 1.08rem;
 }
 
-.main-contacto input {
-    padding: .5rem;
-    width: 100%;
-    margin-bottom: 1.7rem;
-    border-radius: 6px;
-    border: 1px solid gray;
-}
-.main-contacto select {
-    padding: .5rem;
-    width: 100%;
-    margin-bottom: 1.7rem;
-    border-radius: 6px;
-    border: 1px solid gray;
+.contacto-canales {
+    display: grid;
+    gap: 0.75rem;
+    margin-top: 2rem;
 }
 
-.main-contacto button {
-    padding: 1rem;
-    width: 100%;
-    font-size: 1rem;
+.contacto-canales li {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.9rem 1rem;
+    border: 1px solid var(--linea);
+    border-radius: var(--radio);
+    background: var(--superficie);
 }
 
-.main-contacto textarea {
-    width: 60%;
-    height: 6rem;
-    border-radius: 6px;
-    margin-bottom: 1.7rem;
+.canal-icono {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    flex: none;
+    border-radius: 12px;
+    background: var(--marca-suave);
+    color: var(--marca);
+    font-size: 1.15rem;
 }
 
-@media screen and (max-width: 700px) {
+.contacto-canales div {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    line-height: 1.35;
+}
+
+.contacto-canales strong {
+    color: var(--texto-suave);
+    font-size: 0.74rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.contacto-canales span:not(.canal-icono) {
+    color: var(--tinta);
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+
+.main-contacto .panel h2 {
+    margin-bottom: 1.25rem;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 860px) {
     .grid-contacto {
-        grid-template-columns: 1fr;
-        grid-template-rows: auto 1fr auto;
-    }
-
-    .main-contacto {
-        grid-column: 1 / 2;
-        width: 100%;
-        height: 100%;
-    }
-}
-
-@media screen and (max-width: 480px) {
-    .main-contacto form {
-        width: 95%;
-    }
-
-    .main-contacto textarea {
-        width: 100%;
+        grid-template-columns: minmax(0, 1fr);
     }
 }

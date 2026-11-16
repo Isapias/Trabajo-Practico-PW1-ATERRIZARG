@@ -14,13 +14,13 @@ function enviarFormulario(e) {
     const asuntoVal = document.getElementById("asunto").value;
 
     if (!nombre || !email || !asuntoVal) {
-        alert("Por favor complete todos los campos obligatorios (Nombre, Email y Asunto).");
+        notificar("Por favor complete todos los campos obligatorios (Nombre, Email y Asunto).");
         return;
     }
 
     const regexCorreo = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!regexCorreo.test(email)) {
-        alert("El formato del correo no es válido.");
+        notificar("El formato del correo no es válido.");
         return;
     }
 
@@ -36,14 +36,14 @@ function enviarFormulario(e) {
     })
         .then(res => {
             if (res.ok) {
-                alert("Mensaje enviado con éxito");
+                notificar("Mensaje enviado con éxito");
                 form.reset();
             } else {
-                alert("No se pudo enviar el mensaje");
+                notificar("No se pudo enviar el mensaje");
             }
         })
         .catch(err => {
             console.error("Error al enviar el formulario:", err);
-            alert("Ocurrió un error al intentar enviar el mensaje. Por favor, intente de nuevo.");
+            notificar("Ocurrió un error al intentar enviar el mensaje. Por favor, intente de nuevo.");
         });
 }

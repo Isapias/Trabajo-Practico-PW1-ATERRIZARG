@@ -13,7 +13,7 @@ formulario.addEventListener(
         const contrasena = document.getElementById("contrasena").value;
 
         if (!email || !contrasena) {
-            alert("Por favor complete todos los campos.");
+            notificar("Por favor complete todos los campos.");
             return;
         }
 
@@ -23,12 +23,12 @@ formulario.addEventListener(
 
             localStorage.setItem("usuarioLogueado", usuarioCoincidencia.correo);
 
-            alert("Bienvenido " + usuarioCoincidencia.nombre);
+            notificar("Bienvenido " + usuarioCoincidencia.nombre);
             window.location.href = "perfil.html";
 
         }
         else {
-            alert("Datos incorrectos");
+            notificar("Datos incorrectos");
         }
     }
 );

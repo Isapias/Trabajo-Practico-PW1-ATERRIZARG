@@ -2,26 +2,58 @@
 // DATOS DE LA BÚSQUEDA
 // =========================
 
-const busqueda =
-    JSON.parse(
-        localStorage.getItem("busqueda")
-    );
+const busqueda = JSON.parse(localStorage.getItem("busqueda"));
 
 if (!busqueda) {
-    alert("Debe realizar una búsqueda primero.");
+    notificar("Debe realizar una búsqueda primero.");
     window.location.href = "../index.html";
 } else {
     const idDeVueloOferta = busqueda.id || "";
 
-    const destino =
-        busqueda.destino || "";
+    const destino = busqueda.destino || "";
+
+    const icono = ATERRIZARG.icono;
+
+    const logosAerolineas = {
+        "AerolineasArgentinas": "../images/aerolineasargentinas-logo-l.png",
+        "Flybondi": "../images/Flybondi_logo_simple.svg.png"
+    };
+
+    const equipajes = {
+        "de-mano": { icono: "bag", nombre: "De mano" },
+        "cabina": { icono: "carry", nombre: "Cabina" },
+        "despachar": { icono: "luggage", nombre: "Para despachar" }
+    };
+
+    // =========================
+    // RESUMEN DE LA BÚSQUEDA
+    // =========================
+
+    function mostrarResumenBusqueda() {
+        const contenedor = document.getElementById("informacion-busqueda");
+        const titulo = document.getElementById("titulo-busqueda");
+
+        if (titulo && destino) {
+            titulo.textContent = (busqueda.origen || "Buenos Aires") + " → " + destino;
+        }
+
+        if (!contenedor) return;
+
+        const pasajeros = busqueda.pasajeros || 1;
+
+        contenedor.innerHTML = `
+            <span>${icono("users")} ${pasajeros} ${pasajeros === 1 ? "pasajero" : "pasajeros"}</span>
+            <span>${icono("seat")} ${busqueda.clase || "Turista"}</span>
+            ${idDeVueloOferta ? `<span class="badge badge-sol badge-plano">${icono("tag")} Oferta</span>` : ""}
+        `;
+    }
+
+    // =========================
+    // MOSTRAR VUELOS
+    // =========================
 
     function mostrarVuelos() {
-
-        const contenedor =
-            document.getElementById(
-                "contenedor-vuelos"
-            );
+        const contenedor = document.getElementById("contenedor-vuelos");
 
         contenedor.innerHTML = "";
 
@@ -43,109 +75,73 @@ if (!busqueda) {
     }
 
     function agregarCardAlContenedor(vuelo, contenedor) {
-        const card =
-            document.createElement("div");
+        const card = document.createElement("div");
 
         card.className = "card";
 
-        card.dataset.destino =
-            vuelo.destino;
+        card.dataset.destino = vuelo.destino;
+        card.dataset.tipo = vuelo.tipo;
+        card.dataset.aerolinea = vuelo.aerolinea;
+        card.dataset.equipaje = vuelo.equipaje.join(",");
+        card.dataset.precio = vuelo.precio;
 
-        card.dataset.tipo =
-            vuelo.tipo;
+        const logoAerolinea = logosAerolineas[vuelo.aerolinea] || "";
+        const esDirecto = vuelo.tipo === "directo";
 
-        card.dataset.aerolinea =
-            vuelo.aerolinea;
-
-        card.dataset.equipaje =
-            vuelo.equipaje.join(",");
-
-        card.dataset.precio =
-            vuelo.precio;
-
-        let logoAerolinea = "";
-
-        if (vuelo.aerolinea === "AerolineasArgentinas") {
-
-            logoAerolinea =
-                "../images/aerolineasargentinas-logo-l.png";
-
-        }
-        else if (vuelo.aerolinea === "Flybondi") {
-
-            logoAerolinea =
-                "../images/Flybondi_logo_simple.svg.png";
-
-        }
+        const listaEquipaje = vuelo.equipaje
+            .map(function (tipo) {
+                const equipaje = equipajes[tipo] || { icono: "bag", nombre: tipo };
+                return `<li>${icono(equipaje.icono)} ${equipaje.nombre}</li>`;
+            })
+            .join("");
 
         card.innerHTML = `
+            <article class="vuelo-card">
+                <div class="vuelo-logo">
+                    <img
+                        src="${logoAerolinea}"
+                        alt="${ATERRIZARG.nombreAerolinea(vuelo.aerolinea)}"
+                        class="logo-aerolinea logo-${vuelo.aerolinea}"
+                    >
+                    <span class="vuelo-numero mono">${vuelo.numeroVuelo}</span>
+                </div>
 
-<div class="vuelo-card">
+                <div class="vuelo-info">
+                    <div class="ruta">
+                        <div class="ruta-punto">
+                            <strong class="mono">${vuelo.horarioSalida}</strong>
+                            <span>${vuelo.origen}</span>
+                        </div>
 
-    <div class="vuelo-logo">
+                        <div class="ruta-linea">
+                            <span class="ruta-duracion">${vuelo.duracion}</span>
+                            <span class="ruta-trazo">${icono("plane")}</span>
+                            <span class="badge ${esDirecto ? "badge-ok" : "badge-aviso"}">
+                                ${esDirecto ? "Directo" : "Con escala"}
+                            </span>
+                        </div>
 
-        <img
-            src="${logoAerolinea}"
-            alt="${vuelo.aerolinea}"
-            class="logo-aerolinea"
-        >
+                        <div class="ruta-punto ruta-llegada">
+                            <strong class="mono">${vuelo.horarioLlegada}</strong>
+                            <span>${vuelo.destino}</span>
+                        </div>
+                    </div>
 
-    </div>
+                    <ul class="datos-vuelo">
+                        <li>${icono("calendar")} ${vuelo.fechaSalida}</li>
+                        ${listaEquipaje}
+                    </ul>
+                </div>
 
-    <div class="vuelo-info">
-
-        <div class="ruta">
-            🌎 ${vuelo.origen}
-            ➜
-            ${vuelo.destino}
-        </div>
-
-        <div class="datos-vuelo">
-
-            <span>🎫 ${vuelo.numeroVuelo}</span>
-
-            <span>📅 ${vuelo.fechaSalida}</span>
-
-            <span>
-                🕒 ${vuelo.horarioSalida}
-                -
-                ${vuelo.horarioLlegada}
-            </span>
-
-            <span>⏳ ${vuelo.duracion}</span>
-
-            <span>
-                ${vuelo.tipo === "directo"
-                ? "🟢 Directo"
-                : "🟠 Escala"
-            }
-            </span>
-
-            <span>
-                🧳 ${vuelo.equipaje.join(", ")}
-            </span>
-
-        </div>
-
-    </div>
-
-    <div class="vuelo-precio">
-
-        <h2>
-            U$D ${vuelo.precio}
-        </h2>
-
-        <button onclick="
-            reservar(${vuelo.id})
-        ">
-            RESERVAR
-        </button>
-
-    </div>
-
-</div>
-
-`;
+                <div class="vuelo-precio">
+                    <span class="precio-label">Precio por pasajero</span>
+                    <h2 class="mono">U$D ${vuelo.precio}</h2>
+                    <button class="btn btn-primario" onclick="reservar(${vuelo.id})">
+                        Reservar ${icono("arrow-right", "ico-mueve")}
+                    </button>
+                </div>
+            </article>
+        `;
 
         contenedor.appendChild(card);
     }
@@ -155,93 +151,77 @@ if (!busqueda) {
     // =========================
 
     function reservar(id) {
-
-        const usuarioLogueado =
-            localStorage.getItem(
-                "usuarioLogueado"
-            );
+        const usuarioLogueado = localStorage.getItem("usuarioLogueado");
 
         if (!usuarioLogueado) {
+            notificar("Debe iniciar sesión");
 
-            alert(
-                "Debe iniciar sesión"
-            );
-
-            window.location.href =
-                "./login.html";
+            window.location.href = "./login.html";
 
             return;
         }
 
-        const vueloSeleccionado =
-            vuelos.find(function (vuelo) {
+        const vueloSeleccionado = vuelos.find(function (vuelo) {
+            return vuelo.id === id;
+        });
 
-                return vuelo.id === id;
-
-            });
-
-        localStorage.setItem(
-            "vueloSeleccionado",
-            JSON.stringify(
-                vueloSeleccionado
-            )
-        );
+        localStorage.setItem("vueloSeleccionado", JSON.stringify(vueloSeleccionado));
 
         localStorage.removeItem("asientosSeleccionados");
 
-        window.location.href =
-            "./detalle-de-vuelo.html";
-
+        window.location.href = "./detalle-de-vuelo.html";
     }
+
+    // Los botones de las tarjetas llaman a reservar() desde el atributo onclick
+    window.reservar = reservar;
+
     // =========================
     // FILTROS
     // =========================
 
-    const checkDirecto =
-        document.getElementById("directo");
-
-    const checkEscalas =
-        document.getElementById("escalas");
-
-    const Flybondi =
-        document.getElementById("Flybondi");
-
-    const AerolineasArgentinas =
-        document.getElementById("AerolineasArgentinas");
-
-    const mano =
-        document.getElementById("de-mano");
-
-    const cabina =
-        document.getElementById("cabina");
-
-    const despachar =
-        document.getElementById("despachar");
-
-    const precio =
-        document.getElementById("precio");
-
-    const precioActual =
-        document.getElementById("precio-actual");
+    const checkDirecto = document.getElementById("directo");
+    const checkEscalas = document.getElementById("escalas");
+    const Flybondi = document.getElementById("Flybondi");
+    const AerolineasArgentinas = document.getElementById("AerolineasArgentinas");
+    const mano = document.getElementById("de-mano");
+    const cabina = document.getElementById("cabina");
+    const despachar = document.getElementById("despachar");
+    const precio = document.getElementById("precio");
+    const precioActual = document.getElementById("precio-actual");
 
     // =========================
     // MOSTRAR VALOR DEL SLIDER
     // =========================
 
+    function mostrarPrecioActual() {
+        precioActual.textContent = "$" + precio.value + " USD";
+    }
+
+    // El tope del slider se ajusta al vuelo más caro de la búsqueda,
+    // así ningún resultado queda oculto por el valor inicial.
+    function ajustarPrecioMaximo() {
+        if (!precio) return;
+
+        let precioMasAlto = 0;
+
+        document.querySelectorAll("#contenedor-vuelos .card").forEach(function (card) {
+            precioMasAlto = Math.max(precioMasAlto, Number(card.dataset.precio));
+        });
+
+        if (precioMasAlto > 0) {
+            const tope = Math.ceil(precioMasAlto / 10) * 10;
+            precio.max = tope;
+            precio.value = tope;
+        }
+
+        mostrarPrecioActual();
+    }
+
     if (precio) {
-
-        precio.addEventListener(
-            "input",
-            function () {
-
-                precioActual.textContent =
-                    "$" +
-                    precio.value +
-                    " USD";
-
-            }
-        );
-
+        precio.addEventListener("input", function () {
+            mostrarPrecioActual();
+            mostrarTarjetasPorFiltro();
+        });
     }
 
     // =========================
@@ -249,11 +229,7 @@ if (!busqueda) {
     // =========================
 
     function obtenerOpcionesEquipaje(card) {
-
-        return (
-            card.dataset.equipaje || ""
-        );
-
+        return card.dataset.equipaje || "";
     }
 
     // =========================
@@ -261,83 +237,58 @@ if (!busqueda) {
     // =========================
 
     function mostrarTarjetasPorFiltro() {
-
         const tiposSeleccionados = [];
         const aerolineasSeleccionadas = [];
         const equipajeSeleccionado = [];
 
-        const tarjetas =
-            document.querySelectorAll(".card");
+        const tarjetas = document.querySelectorAll(".card");
 
         if (checkDirecto?.checked) {
-            tiposSeleccionados.push(
-                "directo"
-            );
+            tiposSeleccionados.push("directo");
         }
 
         if (checkEscalas?.checked) {
-            tiposSeleccionados.push(
-                "escala"
-            );
+            tiposSeleccionados.push("escala");
         }
 
         if (Flybondi?.checked) {
-            aerolineasSeleccionadas.push(
-                "Flybondi"
-            );
+            aerolineasSeleccionadas.push("Flybondi");
         }
 
         if (AerolineasArgentinas?.checked) {
-            aerolineasSeleccionadas.push(
-                "AerolineasArgentinas"
-            );
+            aerolineasSeleccionadas.push("AerolineasArgentinas");
         }
 
         if (mano?.checked) {
-            equipajeSeleccionado.push(
-                "de-mano"
-            );
+            equipajeSeleccionado.push("de-mano");
         }
 
         if (cabina?.checked) {
-            equipajeSeleccionado.push(
-                "cabina"
-            );
+            equipajeSeleccionado.push("cabina");
         }
 
         if (despachar?.checked) {
-            equipajeSeleccionado.push(
-                "despachar"
-            );
+            equipajeSeleccionado.push("despachar");
         }
+
+        let cantidadVisible = 0;
 
         tarjetas.forEach(function (card) {
 
             // Respeta siempre el destino buscado
-            if (
-                card.dataset.destino !==
-                destino
-            ) {
-
-                card.style.display =
-                    "none";
+            if (card.dataset.destino !== destino) {
+                card.style.display = "none";
 
                 return;
             }
 
-            const tipo =
-                (
-                    card.dataset.tipo || ""
-                ).toLowerCase();
+            const tipo = (card.dataset.tipo || "").toLowerCase();
 
-            const aerolinea =
-                card.dataset.aerolinea || "";
+            const aerolinea = card.dataset.aerolinea || "";
 
-            const equipajeOpciones =
-                obtenerOpcionesEquipaje(card);
+            const equipajeOpciones = obtenerOpcionesEquipaje(card);
 
-            const precioVuelo =
-                Number(card.dataset.precio);
+            const precioVuelo = Number(card.dataset.precio);
 
             let visible = true;
 
@@ -345,54 +296,51 @@ if (!busqueda) {
                 tiposSeleccionados.length > 0 &&
                 !tiposSeleccionados.includes(tipo)
             ) {
-
                 visible = false;
-
             }
 
             if (
                 aerolineasSeleccionadas.length > 0 &&
                 !aerolineasSeleccionadas.includes(aerolinea)
             ) {
-
                 visible = false;
-
             }
 
             if (
                 equipajeSeleccionado.length > 0 &&
-                !equipajeSeleccionado.every(
-                    function (opcion) {
-
-                        return equipajeOpciones.includes(
-                            opcion
-                        );
-
-                    }
-                )
+                !equipajeSeleccionado.every(function (opcion) {
+                    return equipajeOpciones.includes(opcion);
+                })
             ) {
-
                 visible = false;
-
             }
 
-            if (
-                precio &&
-                precioVuelo >
-                Number(precio.value)
-            ) {
-
+            if (precio && precioVuelo > Number(precio.value)) {
                 visible = false;
-
             }
 
-            card.style.display =
-                visible
-                    ? "flex"
-                    : "none";
+            card.style.display = visible ? "flex" : "none";
 
+            if (visible) cantidadVisible++;
         });
 
+        mostrarCantidadDeResultados(cantidadVisible);
+    }
+
+    function mostrarCantidadDeResultados(cantidad) {
+        const contador = document.getElementById("contador-vuelos");
+        const sinResultados = document.getElementById("sin-resultados");
+
+        if (contador) {
+            contador.textContent =
+                cantidad === 1
+                    ? "1 vuelo encontrado"
+                    : cantidad + " vuelos encontrados";
+        }
+
+        if (sinResultados) {
+            sinResultados.classList.toggle("oculto", cantidad > 0);
+        }
     }
 
     // =========================
@@ -409,18 +357,20 @@ if (!busqueda) {
         despachar,
         precio
     ].forEach(function (input) {
-
         if (input) {
-
-            input.addEventListener(
-                "change",
-                mostrarTarjetasPorFiltro
-            );
-
+            input.addEventListener("change", mostrarTarjetasPorFiltro);
         }
-
     });
 
+    // En pantallas chicas los filtros arrancan cerrados para que los vuelos se vean primero
+    if (window.matchMedia("(max-width: 980px)").matches) {
+        document.querySelectorAll(".filtros details").forEach(function (grupo) {
+            grupo.removeAttribute("open");
+        });
+    }
+
+    mostrarResumenBusqueda();
     mostrarVuelos();
+    ajustarPrecioMaximo();
     mostrarTarjetasPorFiltro();
 }
