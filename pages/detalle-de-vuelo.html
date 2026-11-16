@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle de vuelo</title>
+    <link rel="stylesheet" href="../styles/styles.css">
+    <link rel="stylesheet" href="../styles/detalle-de-vuelo.css">
+</head>
+
+<body>
+    <div class="grid-detalles">
+
+        <header class="a">
+            <img class="logo-card" src="../images/LOGO ATERRIZARG.png" alt="Logo">
+            <div class="logo">ATERRIZARG</div>
+            <nav>
+                <a href="../index.html">Inicio</a>
+                <a href="./reservas.html">Mis reservas</a>
+                <a href="./ofertas.html">Ofertas</a>
+                <a href="./contacto.html">Contacto</a>
+                <a href="./perfil.html" id="nav-perfil">Perfil</a>
+                <a href="./login.html" id="nav-iniciar-sesion">Iniciar sesion</a>
+                <a href="../index.html" onclick="cerrarSesion()" id="nav-cerrar-sesion">Cerrar sesion</a>
+
+            </nav>
+        </header>
+
+        <aside class="b">
+            <h3>Detalle de vuelo</h3>
+            <div class="detalle-card">
+                <p class="ida-vuelta" id="ruta-vuelo"></p>
+                <p class="ida-vuelta" id="horario-vuelo"></p>
+                <p class="ida-vuelta" id="tipo-vuelo"></p>
+            </div>
+            <div class="total">
+                <p class="ida-vuelta" id="precio-vuelo"></p>
+            </div>
+        </aside>
+
+        <main class="c c-detalle">
+            <h2>Selecciona tu asiento</h2>
+            <div class="disponible-ocupado-container">
+                <div class="caja-disponible"></div>
+                <p>disponible</p>
+                <div class="caja-ocupado"></div>
+                <p>ocupado</p>
+            </div>
+            <div class="asiento-container">
+
+                <div class="vacio"></div>
+                <div class="letra">A</div>
+                <div class="letra">B</div>
+                <div class="letra">C</div>
+                <div class="letra">D</div>
+                <div class="vacio"></div>
+                <div class="letra">E</div>
+                <div class="letra">F</div>
+                <div class="letra">G</div>
+                <div class="letra">H</div>
+            </div>
+            <div class="botones-container">
+                <button onclick="window.location.href='./busqueda.html'">
+                    Volver
+                </button>
+                <button class="continuar" onclick="continuarCheckout()">
+                    Continuar
+                </button>
+            </div>
+        </main>
+
+        <footer>
+            <div>
+                <p class="footerContacto">© 2026 ATERRIZARG. Todos los derechos reservados</p>
+                <p class="footerContacto"><img class="icono" src="../images/envelope-open-solid.png" alt="Email"> Email:
+                    contacto@aterrizarg.com</p>
+                <p class="footerContacto"><img class="icono" src="../images/phone-solid.png" alt="Teléfono"> Teléfono:
+                    +54 11 1234-5678</p>
+                <p class="footerContacto"><img class="icono" src="../images/map-pin-solid.png" alt="Ubicación"> Buenos
+                    Aires, Argentina</p>
+            </div>
+        </footer>
+
+    </div>
+    <script src="../JS/navbar.js"></script>
+    <script src="../JS/detalle-de-vuelo.js"></script>
+</body>
+
+</html>

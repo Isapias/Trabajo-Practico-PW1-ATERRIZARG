@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ofertas</title>
+    <link rel="stylesheet" href="../styles/styles.css">
+    <link rel="stylesheet" href="../styles/styles-ofertas.css">
+</head>
+
+<body class="body-ofertas">
+    <div class="grid-ofertas">
+
+        <header class="a">
+            <img class="logo-card" src="../images/LOGO ATERRIZARG.png" alt="Logo">
+            <div class="logo">ATERRIZARG</div>
+            <nav>
+                <a href="../index.html">Inicio</a>
+                <a href="./reservas.html">Mis reservas</a>
+                <a href="./ofertas.html" class="selected-nav">Ofertas</a>
+                <a href="./contacto.html">Contacto</a>
+                <a href="./perfil.html" id="nav-perfil">Perfil</a>
+                <a href="./login.html" id="nav-iniciar-sesion">Iniciar sesion</a>
+                <a href="../index.html" onclick="cerrarSesion()" id="nav-cerrar-sesion">Cerrar sesion</a>
+
+            </nav>
+        </header>
+
+        <main class="main-ofertas">
+
+            <section class="ofertas-section">
+                <h2 id="titulo-ofertas">Precios increíbles</h2>
+                <p>¡Nuestra selección de destinos con precios únicos pensados para vos!</p>
+                <div class="contenedor-cards" id="contenedor-ofertas">
+                </div>
+            </section>
+            <section class="guia-viaje">
+                <h2>Te contamos todo lo que tenés que saber para volar en AterrizARG al precio más bajo</h2>
+
+                <div class="grid-pasos">
+                    <article class="paso-card">
+                        <div class="contenido">
+                            <h3>SELECCIONÁ TU VUELO</h3>
+                            <p>Elegí a dónde querés ir y cuándo. Acordate que cuanto antes compres, más barato vas a
+                                volar.</p>
+                        </div>
+                    </article>
+
+                    <article class="paso-card">
+                        <div class="contenido">
+                            <h3>¿QUÉ INCLUYE MI PASAJE?</h3>
+                            <p>Un bolso o mochila de mano. Podés incluir un equipaje de cabina y/o de bodega con un
+                                costo adicional.</p>
+                        </div>
+                    </article>
+
+                    <article class="paso-card">
+                        <div class="contenido">
+                            <h3>PAGÁ</h3>
+                            <p>¿Ya estás listo? Usá tu tarjeta de débito o crédito y recibí nuestra confirmación de
+                                compra inmediatamente.</p>
+                        </div>
+                    </article>
+
+                    <article class="paso-card">
+                        <div class="contenido">
+                            <h3>HACÉ TU CHECK-IN</h3>
+                            <p>A partir de las 48 hs. antes de tu vuelo, entrá a nuestra web y confirmá tu viaje.</p>
+                        </div>
+                    </article>
+
+                    <article class="paso-card">
+                        <div class="contenido">
+                            <h3>RECIBÍ TU TARJETA DE EMBARQUE</h3>
+                            <p>Te vamos a enviar por email la tarjeta de embarque para que presentes con tu teléfono o
+                                imprimas.</p>
+                        </div>
+                    </article>
+
+                    <article class="paso-card">
+                        <div class="contenido">
+                            <h3>¡NOS VEMOS EN EL AEROPUERTO!</h3>
+                            <p>No olvides llevar la documentación necesaria para volar.</p>
+                        </div>
+                    </article>
+                </div>
+            </section>
+        </main>
+        <footer>
+            <div>
+                <p class="footerContacto">© 2026 ATERRIZARG. Todos los derechos reservados</p>
+                <p class="footerContacto"><img class="icono" src="../images/envelope-open-solid.png" alt="Email"> Email:
+                    contacto@aterrizarg.com</p>
+                <p class="footerContacto"><img class="icono" src="../images/phone-solid.png" alt="Teléfono"> Teléfono:
+                    +54 11 1234-5678</p>
+                <p class="footerContacto"><img class="icono" src="../images/map-pin-solid.png" alt="Ubicación"> Buenos
+                    Aires, Argentina</p>
+            </div>
+        </footer>
+    </div>
+
+    <script src="../JS/vuelos.js"></script>
+    <script src="../JS/imagenes-destinos.js"></script>
+    <script src="../JS/ofertas.js"></script>
+    <script src="../JS/navbar.js"></script>
+</body>
+
+</html>

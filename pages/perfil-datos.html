@@ -1,0 +1,114 @@
+<form id="formPerfil">
+    <div class="contenedor-gral">
+        <div class="perfil-seccion-header">
+            <h2>Datos Personales</h2>
+        </div>
+        <p class="subtitulo-perfil">Estos datos deben coincidir exactamente con tu documento de viaje para poder
+            abordar.</p>
+
+        <div class="tarjeta-perfil-datos">
+
+            <div class="dato-bloque">
+                <span>Nombre y Apellido</span>
+                <span id="perf-nombre"></span>
+            </div>
+
+            <div class="dato-bloque">
+                <span>Documento de Viaje</span>
+                <span id="perf-doc"></span>
+            </div>
+
+            <div class="dato-bloque">
+                <span>Fecha de Nacimiento</span>
+                <span id="perf-fecha"></span>
+            </div>
+
+            <div class="dato-bloque">
+                <span>Nacionalidad</span>
+                <span id="perf-nac"></span>
+            </div>
+
+            <div class="dato-bloque">
+                <span>Género</span>
+                <span id="perf-genero"></span>
+            </div>
+
+        </div>
+
+        <div class="contenedor-gral">
+            <h3>Teléfono</h3>
+            <fieldset id="field-tel" name="telefono">
+                <div class="form-tel">
+                    <p>Agregá o editá tu número de contacto</p>
+                    <details>
+                        <summary>Agregar Teléfono</summary>
+                        <div class="contenedor-labels-grid">
+                            <label class="label-tel-1" for="cod-pais">
+                                <span>Código de país</span>
+                                <div class="form-prefijo-pais">
+                                    <input id="cod-pais" type="text" name="cod-pais" class="input-tel cod"
+                                        placeholder="+ xx" value="">
+                                </div>
+                            </label>
+                            <label class="label-tel-2" for="cod-area">
+                                <span>Código de área</span>
+                                <div>
+                                    <input id="cod-area" type="tel" name="cod-area" class="input-tel area"
+                                        placeholder="011" value="">
+                                </div>
+                            </label>
+                            <label class="label-tel-3" for="nro-tel">
+                                <span>Número de teléfono</span>
+                                <div>
+                                    <input id="nro-tel" type="tel" name="nro-tel" class="input-tel nro"
+                                        placeholder="22334455" value="">
+                                </div>
+                            </label>
+                            <div class="form-boton">
+                                <button type="submit" name="save" id="datos-enviar">Guardar</button>
+                            </div>
+
+                        </div>
+                    </details>
+                </div>
+            </fieldset>
+        </div>
+
+        <div class="contenedor-gral">
+            <h3>Email</h3>
+            <fieldset id="field-email" name="email">
+                <p>Agregá emails de respaldo</p>
+                <div class="correo-verificado">
+                    <span id="correo-verificado"></span>
+                    <span>verificado</span>
+                </div>
+                <div class="oculto correos-respaldo" id="div-correo-respaldo">
+                    <div class="oculto correo-respaldo-fila" id="correo-respaldo-fila-0">
+                    </div>
+                    <div class="oculto correo-respaldo-fila" id="correo-respaldo-fila-1">
+                    </div>
+                </div>
+                <details id="correo-details">
+                    <summary>Agregar email</summary>
+                    <div class="contenedor-labels-grid">
+                        <label for="email-nuevo">
+                            <span>Correo electrónico</span>
+                            <div class="form-correo">
+                                <input type="email" name="email" id="email-nuevo" placeholder="minombre@ejemplo.com"
+                                    autocomplete="off">
+                            </div>
+                        </label>
+                        <div class="form-boton">
+                            <button type="submit" name="save" id="datos-enviar">Guardar</button>
+                        </div>
+                    </div>
+                </details>
+            </fieldset>
+        </div>
+</form>
+<form action="../index.html" method="get">
+    <div class="form-eliminar">
+        <button type="submit" class="btn-eliminar" id="btn-eliminar">Eliminar mi cuenta</button>
+    </div>
+</form>
+<script src="perfil-medios-pago.js" type="module"></script>

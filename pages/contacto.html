@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contacto</title>
+    <link rel="stylesheet" href="../styles/styles.css">
+    <link rel="stylesheet" href="../styles/styles-contacto.css">
+</head>
+
+<body>
+
+    <div class="grid">
+
+        <header class="a">
+            <img class="logo-card" src="../images/LOGO ATERRIZARG.png" alt="Logo">
+            <div class="logo">ATERRIZARG</div>
+            <nav>
+                <a href="../index.html">Inicio</a>
+                <a href="./reservas.html">Mis reservas</a>
+                <a href="./ofertas.html">Ofertas</a>
+                <a href="./contacto.html" class="selected-nav">Contacto</a>
+                <a href="./perfil.html" id="nav-perfil">Perfil</a>
+                <a href="./login.html" id="nav-iniciar-sesion">Iniciar sesion</a>
+                <a href="../index.html" onclick="cerrarSesion()" id="nav-cerrar-sesion">Cerrar sesion</a>
+
+            </nav>
+        </header>
+
+        <main class="main-contacto">
+            <h2>Contacto</h2>
+            <form action="https://formspree.io/f/mlgkwraj" method="POST" name="form-contacto" id="form-contacto" novalidate>
+                <label for="nombre-apellido">
+                    <p>Ingresá nombre y apellido</p>
+                    <input id="nombre-apellido" name="nombre" type="text" placeholder="Ingresá tu nombre" >
+                </label>
+                <label for="email-contacto">
+                    <p>Email de contacto</p>
+                    <input id="email-contacto" name="email" type="email" placeholder="Ingresá tu email" >
+                </label>
+                <label for="asunto">
+                    <p>Asunto</p>
+                    <select name="asunto" id="asunto" >
+                        <option value="" selected hidden disabled>Elegí una opción</option>
+                        <option value="daño-maletas">Demora en la entrega, daño de maletas o pérdida total</option>
+                        <option value="vuelos">Cancelaciones, retrasos excesivos o pérdida de conexiones</option>
+                        <option value="atencion-cliente">Quejas sobre el personal de check-in, seguridad o puertas de
+                            embarque</option>
+                        <option value="infraestructura">Limpieza de baños, falta de asientos o problemas con el
+                            Wi-Fi/enchufes</option>
+                        <option value="precios">Disconformidad con costos de estacionamiento o locales comerciales
+                        </option>
+                        <option value="error-registro">Error al registrar mis datos</option>
+                        <option value="otro">Otro</option>
+                    </select>
+                </label>
+                <label for="mensaje">
+                    <p>Tu mensaje (opcional)</p>
+                    <textarea id="mensaje" name="mensaje"></textarea>
+                </label>
+                <button type="submit">Enviar</button>
+            </form>
+        </main>
+
+        <footer>
+            <div>
+                <p class="footerContacto">© 2026 ATERRIZARG. Todos los derechos reservados</p>
+                <p class="footerContacto"><img class="icono" src="../images/envelope-open-solid.png" alt="Email"> Email:
+                    contacto@aterrizarg.com</p>
+                <p class="footerContacto"><img class="icono" src="../images/phone-solid.png" alt="Teléfono"> Teléfono:
+                    +54 11 1234-5678</p>
+                <p class="footerContacto"><img class="icono" src="../images/map-pin-solid.png" alt="Ubicación"> Buenos
+                    Aires, Argentina</p>
+            </div>
+        </footer>
+
+    </div>
+
+    <script src="../JS/navbar.js"></script>
+    <script src="../JS/contacto.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - ATERRIZARG</title>
+    <link rel="stylesheet" href="../styles/styles.css">
+    <link rel="stylesheet" href="../styles/styles-checkout.css">
+</head>
+
+<body>
+    <div class="grid-checkout">
+
+        <header class="a">
+            <img class="logo-card" src="../images/LOGO ATERRIZARG.png" alt="Logo">
+            <nav>
+                <a href="../index.html">Inicio</a>
+                <a href="./reservas.html">Mis reservas</a>
+                <a href="./ofertas.html">Ofertas</a>
+                <a href="./perfil.html">Perfil</a>
+                <a href="./contacto.html">Contacto</a>
+                <a href="./perfil.html" id="nav-perfil">Perfil</a>
+                <a href="./login.html" id="nav-iniciar-sesion">Iniciar sesion</a>
+                <a href="../index.html" onclick="cerrarSesion()" id="nav-cerrar-sesion">Cerrar sesion</a>
+
+            </nav>
+        </header>
+
+        <section class="section-container passenger-data">
+            <h3 id="resumen-vuelo"></h3>
+            <form id="checkout-form">
+                <div class="form-group">
+                    <label for="nombre-completo">Nombre Completo *</label>
+                    <input id="nombre-completo" type="text">
+                </div>
+
+                <div class="form-group">
+                    <label for="documento">Documento *</label>
+                    <input id="documento" type="text">
+                </div>
+
+                <div class="form-group">
+                    <label for="correo-electronico">Correo Electrónico *</label>
+                    <input id="correo-electronico" type="email" placeholder="Ej: correo@email.com">
+                </div>
+
+                <div class="form-group">
+                    <label for="telefono">Teléfono</label>
+                    <input id="telefono" type="tel" placeholder="Ej: +54 9 11 1234-5678">
+                    <span class="optional-text">(Opcional)</span>
+                </div>
+            </form>
+        </section>
+
+        <section class="section-container payment-method">
+            <h3>Método de Pago</h3>
+            <fieldset class="payment-options">
+                <legend class="sr-only">Métodos de pago disponibles</legend>
+                <div class="payment-option">
+                    <input type="radio" id="creditCard" name="payment" value="creditCard" form="checkout-form" checked>
+                    <label for="creditCard">💳 Tarjeta de Crédito/Débito</label>
+                </div>
+
+                <div class="payment-option">
+                    <input type="radio" id="transfer" name="payment" value="transfer" form="checkout-form">
+                    <label for="transfer">🏦 Transferencia Bancaria</label>
+                </div>
+            </fieldset>
+
+            <div id="creditCardDetails" class="card-details">
+                <div id="contenedor-tarjetas-guardadas-checkout" class="oculto">
+                    <label class="tarjetas-guardadas-titulo">Tarjetas Guardadas</label>
+                    <div id="lista-tarjetas-checkout" class="lista-tarjetas-checkout"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="numero-tarjeta">Número de Tarjeta *</label>
+                    <input id="numero-tarjeta" form="checkout-form" type="text" placeholder="1234 5678 9012 3456" maxlength="16"
+                        pattern="[0-9]{16}">
+                </div>
+                <div class="card-details-grid">
+                    <div class="form-group">
+                        <label for="vencimiento">Vencimiento *</label>
+                        <div>
+                            <select name="mes-vto" id="mes-vto" form="checkout-form">
+                                <option value="" disabled selected hidden>Mes</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="10">10</option>
+                                <option value="11">11</option>
+                                <option value="12">12</option>
+                            </select>
+                            <select name="anio-vto" id="anio-vto" form="checkout-form">
+                                <option value="" disabled selected hidden>Año</option>
+                                <option value="2026">2026</option>
+                                <option value="2027">2027</option>
+                                <option value="2028">2028</option>
+                                <option value="2029">2029</option>
+                                <option value="2030">2030</option>
+                                <option value="2031">2031</option>
+                                <option value="2032">2032</option>
+                                <option value="2033">2033</option>
+                                <option value="2034">2034</option>
+                                <option value="2035">2035</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="cvv">CVV *</label>
+                        <input id="cvv" form="checkout-form" type="text" placeholder="123" maxlength="3" pattern="[0-9]{3}">
+                    </div>
+                </div>
+            </div>
+
+            <div id="paypalDetails" class="card-details oculto">
+                <div class="form-group" style="text-align: center;">
+                    <p style="color: #333; font-weight: 500; margin-bottom: 2vh;">Iniciá sesión en PayPal desde la
+                        ventana emergente para pagar de forma segura:</p>
+                    <div id="paypal-button-container"></div>
+                </div>
+            </div>
+
+            <div id="transferDetails" class="card-details oculto">
+                <div
+                    style="background-color: #f0efff; padding: 1.5vh; border-radius: 0.5rem; font-size: 0.95rem; line-height: 1.6;">
+                    <p style="margin: 0; color: #6c63ff; font-weight: bold; margin-bottom: 1vh;">Datos para la
+                        transferencia:</p>
+                    <div><b>Banco:</b> Banco AterrizArG</div>
+                    <div><b>CBU:</b> 0000003100012345678901</div>
+                    <div><b>Alias:</b> aterrizarg.vuelos.pesos</div>
+                    <p style="margin: 0; margin-top: 1vh; font-size: 0.85rem; color: #666;">* Por favor, envía el
+                        comprobante a contacto@aterrizarg.com indicando tu número de documento.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-container flight-summary">
+            <h3>Resumen de Vuelo</h3>
+
+            <div class="summary-item">
+                <span class="summary-item-label">Ruta:</span>
+                <span class="summary-item-value" id="ruta-vuelo"></span>
+            </div>
+
+            <div class="summary-item">
+                <span class="summary-item-label">Fecha:</span>
+                <span class="summary-item-value" id="fecha-vuelo"></span>
+            </div>
+
+            <div class="summary-item">
+                <span class="summary-item-label">Horario:</span>
+                <span class="summary-item-value" id="horario-vuelo"></span>
+            </div>
+
+            <div class="summary-item">
+                <span class="summary-item-label">Vuelo:</span>
+                <span class="summary-item-value" id="numero-vuelo"></span>
+            </div>
+
+            <div class="summary-item">
+                <span class="summary-item-label">Pasajeros:</span>
+                <span class="summary-item-value">1</span>
+            </div>
+
+            <div class="summary-item">
+                <span class="summary-item-label">Subtotal:</span>
+                <span class="summary-item-value" id="precio-vuelo"></span>
+            </div>
+
+            <div class="discount-section">
+                <label for="codigo-descuento">Código de Descuento</label>
+                <input id="codigo-descuento" type="text" placeholder="Ingresa tu código">
+                <button type="button" class="apply-discount-btn">Aplicar Descuento</button>
+            </div>
+
+            <div class="total-section">
+                <div class="label">Total a Pagar</div>
+                <div class="amount" id="total-vuelo"></div>
+            </div>
+        </section>
+        <div class="submit-btn">
+            <button type="button" class="cancel" onclick="window.history.back()">Cancelar</button>
+            <button type="submit" form="checkout-form">
+                Confirmar y Pagar
+            </button>
+        </div>
+
+
+        <footer>
+            <div>
+                <p class="footerContacto">© 2026 ATERRIZARG. Todos los derechos reservados</p>
+                <p class="footerContacto"><img class="icono" src="../images/envelope-open-solid.png" alt="Email"> Email:
+                    contacto@aterrizarg.com</p>
+                <p class="footerContacto"><img class="icono" src="../images/phone-solid.png" alt="Teléfono"> Teléfono:
+                    +54 11 1234-5678</p>
+                <p class="footerContacto"><img class="icono" src="../images/map-pin-solid.png" alt="Ubicación"> Buenos
+                    Aires, Argentina</p>
+            </div>
+        </footer>
+
+    </div>
+    <script src="https://www.paypal.com/sdk/js?client-id=test&currency=USD"></script>
+    <script src="../JS/checkout.js"></script>
+    <script src="../JS/navbar.js"></script>
+</body>
+
+</html>
